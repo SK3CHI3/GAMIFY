@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { DisputeReviewForm } from '@/components/admin/dispute-review-form'
 
-export default async function DisputeDetailPage({ params }: { params: { id: string } }) {
+export default async function DisputeDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const user = await getCurrentUser()
 
   if (!user || user.role !== 'admin') {
@@ -11,6 +11,7 @@ export default async function DisputeDetailPage({ params }: { params: { id: stri
   }
 
   const supabase = await createClient()
+  const { id } = await params
 
   const { data: dispute, error } = await supabase
     .from('disputes')
@@ -23,7 +24,7 @@ export default async function DisputeDetailPage({ params }: { params: { id: stri
         tournaments(name)
       )
     `)
-    .eq('id', params.id)
+    .eq('id', id)
     .single()
 
   if (error || !dispute) {

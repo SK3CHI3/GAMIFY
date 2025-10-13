@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { MatchSubmissionForm } from '@/components/matches/match-submission-form'
 
-export default async function MatchSubmissionPage({ params }: { params: { id: string } }) {
+export default async function MatchSubmissionPage({ params }: { params: Promise<{ id: string }> }) {
   const user = await getCurrentUser()
   
   if (!user) {
@@ -11,6 +11,7 @@ export default async function MatchSubmissionPage({ params }: { params: { id: st
   }
 
   const supabase = await createClient()
+  const { id } = await params
 
   // Fetch match data
   const { data: match, error } = await supabase
@@ -21,7 +22,7 @@ export default async function MatchSubmissionPage({ params }: { params: { id: st
       player2:player2_id(full_name),
       tournament:tournaments(name)
     `)
-    .eq('id', params.id)
+    .eq('id', id)
     .single()
 
   if (error || !match) {
