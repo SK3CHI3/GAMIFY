@@ -103,24 +103,24 @@ export function TournamentsTab() {
 
         {/* Tournaments Tabs */}
         <Tabs defaultValue="registration" className="space-y-6">
-          <TabsList className="backdrop-blur-xl bg-gradient-to-r from-blue-50/60 via-white/80 to-yellow-50/60 border border-blue-200/50 p-1 shadow-lg w-full rounded-2xl">
+          <TabsList className="bg-white/90 border border-blue-200/50 p-1 shadow-lg w-full rounded-2xl grid grid-cols-3 h-12">
             <TabsTrigger 
               value="registration" 
-              className="flex-1 data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300 hover:bg-blue-50"
+              className="data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300 hover:bg-blue-50 text-sm px-3 py-2 flex items-center justify-center"
             >
               <Clock className="w-4 h-4 mr-2" />
               Registration
             </TabsTrigger>
             <TabsTrigger 
               value="ongoing"
-              className="flex-1 data-[state=active]:bg-yellow-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300 hover:bg-yellow-50"
+              className="data-[state=active]:bg-yellow-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300 hover:bg-yellow-50 text-sm px-3 py-2 flex items-center justify-center"
             >
               <Trophy className="w-4 h-4 mr-2" />
               Ongoing
             </TabsTrigger>
             <TabsTrigger 
               value="completed"
-              className="flex-1 data-[state=active]:bg-green-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300 hover:bg-green-50"
+              className="data-[state=active]:bg-green-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300 hover:bg-green-50 text-sm px-3 py-2 flex items-center justify-center"
             >
               <CheckCircle className="w-4 h-4 mr-2" />
               Completed
