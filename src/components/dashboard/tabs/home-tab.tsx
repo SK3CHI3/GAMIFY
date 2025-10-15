@@ -58,7 +58,7 @@ export function HomeTab() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
-        <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-gray-600" />
       </div>
     )
   }
@@ -72,7 +72,7 @@ export function HomeTab() {
       {/* My Tournaments */}
       {userRegistrations && userRegistrations.length > 0 && (
         <section className="space-y-4">
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">My Tournaments</h2>
+          <h2 className="text-2xl font-bold text-gray-900">My Tournaments</h2>
           <div className="grid gap-4">
             {userRegistrations.map((reg) => (
               <TournamentCard key={reg.id} tournament={reg.tournaments} userRegistration={reg} />
@@ -83,7 +83,7 @@ export function HomeTab() {
 
       {/* Available Tournaments */}
       <section className="space-y-4">
-        <h2 className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Available Tournaments</h2>
+          <h2 className="text-2xl font-bold text-gray-900">Available Tournaments</h2>
         <div className="grid gap-4">
           {tournaments && tournaments.length > 0 ? (
             tournaments.slice(0, 5).map((tournament) => (

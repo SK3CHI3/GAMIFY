@@ -16,11 +16,11 @@ export function PlayerHeader({ user }: { user: Profile | null }) {
         <div className="flex items-center gap-4">
           <div className="relative">
             <Avatar className="w-16 h-16 border-4 border-white shadow-lg">
-              <AvatarFallback className="bg-gradient-to-br from-emerald-500 to-teal-600 text-white text-xl font-bold">
+              <AvatarFallback className="bg-gray-100 text-gray-900 text-xl font-bold">
                 {user?.full_name?.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
-            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full border-2 border-white" />
+            <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-white bg-green-500" />
           </div>
           <div>
             <h1 className="text-2xl font-bold text-gray-900">{user?.full_name}</h1>

@@ -26,24 +26,24 @@ export default function DashboardPage() {
         {/* Bottom Navigation */}
         <div className="fixed bottom-4 left-4 right-4 z-50">
           <div className="container mx-auto max-w-md">
-            <TabsList className="w-full bg-white border border-gray-200 shadow-2xl rounded-2xl p-2 h-16">
+            <TabsList className="w-full bg-white/80 backdrop-blur-md border border-blue-200/50 shadow-2xl rounded-2xl p-2 h-16">
               <TabsTrigger 
                 value="home" 
-                className="flex-1 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all h-12"
+                className="flex-1 rounded-xl data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all h-12"
               >
                 <Home className="w-5 h-5 md:mr-2" />
                 <span className="hidden md:inline">Home</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="tournaments"
-                className="flex-1 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all h-12"
+                className="flex-1 rounded-xl data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all h-12"
               >
                 <Trophy className="w-5 h-5 md:mr-2" />
                 <span className="hidden md:inline">Tournaments</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="profile"
-                className="flex-1 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all h-12"
+                className="flex-1 rounded-xl data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all h-12"
               >
                 <User className="w-5 h-5 md:mr-2" />
                 <span className="hidden md:inline">Profile</span>

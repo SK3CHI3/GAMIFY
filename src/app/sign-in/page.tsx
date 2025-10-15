@@ -10,7 +10,7 @@ export default function SignInPage() {
   return (
     <div className="min-h-screen flex relative overflow-hidden">
       {/* Left Side - Branding & Image */}
-      <div className="relative hidden lg:flex items-center justify-center flex-1 bg-gradient-to-br from-emerald-600 via-teal-600 to-emerald-700 p-12">
+      <div className="relative hidden lg:flex items-center justify-center flex-1 bg-gradient-to-br from-blue-900 via-blue-800 to-blue-950 p-12">
         <div className="absolute inset-0">
           <Image
             src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1200&q=80"
@@ -22,10 +22,10 @@ export default function SignInPage() {
         
         <div className="relative z-10 max-w-md text-white space-y-8">
           <Link href="/" className="flex items-center gap-3">
-            <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30">
-              <Trophy className="w-8 h-8 text-white" />
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl" style={{ backgroundColor: '#FFFF00' }}>
+              <Trophy className="w-8 h-8 text-gray-900" />
             </div>
-            <span className="text-3xl font-bold">MATCHFY</span>
+            <span className="text-3xl font-bold text-white">MATCHFY</span>
           </Link>
           
           <motion.div
@@ -35,29 +35,29 @@ export default function SignInPage() {
             className="space-y-4"
           >
             <h1 className="text-5xl font-bold leading-tight">Welcome Back!</h1>
-            <p className="text-emerald-100 text-lg leading-relaxed">
+            <p className="text-blue-100 text-lg leading-relaxed">
               Sign in to continue your journey in competitive eFootball tournaments.
             </p>
           </motion.div>
 
           <div className="space-y-5 pt-4">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30">
-                <Award className="w-6 h-6 text-white" />
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg" style={{ backgroundColor: '#FFFF00' }}>
+                <Award className="w-6 h-6 text-gray-900" />
               </div>
-              <span className="text-emerald-100 text-lg">Compete for real prizes</span>
+              <span className="text-blue-100 text-lg">Compete for real prizes</span>
             </div>
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30">
-                <Zap className="w-6 h-6 text-white" />
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg" style={{ backgroundColor: '#FFFF00' }}>
+                <Zap className="w-6 h-6 text-gray-900" />
               </div>
-              <span className="text-emerald-100 text-lg">Automated matchmaking</span>
+              <span className="text-blue-100 text-lg">Automated matchmaking</span>
             </div>
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30">
-                <Gamepad2 className="w-6 h-6 text-white" />
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg" style={{ backgroundColor: '#FFFF00' }}>
+                <Gamepad2 className="w-6 h-6 text-gray-900" />
               </div>
-              <span className="text-emerald-100 text-lg">Real-time tournaments</span>
+              <span className="text-blue-100 text-lg">Real-time tournaments</span>
             </div>
           </div>
         </div>
@@ -68,10 +68,10 @@ export default function SignInPage() {
         <div className="w-full max-w-md">
           <div className="lg:hidden mb-8">
             <Link href="/" className="flex items-center gap-2">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
-                <Trophy className="w-6 h-6 text-white" />
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg" style={{ backgroundColor: '#FFFF00' }}>
+                <Trophy className="w-6 h-6 text-gray-900" />
               </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+              <span className="text-2xl font-bold text-gray-900">
                 MATCHFY
               </span>
             </Link>

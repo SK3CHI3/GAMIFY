@@ -14,11 +14,11 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-yellow-50/30 to-blue-100/50">
       {/* Background decoration */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-20 -right-20 w-96 h-96 bg-[#00FF88]/10 rounded-full blur-3xl" />
-        <div className="absolute -bottom-20 -left-20 w-96 h-96 bg-[#FFB800]/10 rounded-full blur-3xl" />
+        <div className="absolute -top-20 -right-20 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute -bottom-20 -left-20 w-96 h-96 bg-yellow-400/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
       </div>
 
       <div className="flex relative">

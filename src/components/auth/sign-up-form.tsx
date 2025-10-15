@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { signUp } from '@/app/actions/auth'
-import { Loader2, Check, X } from 'lucide-react'
+import { Loader2, Check, X, Eye, EyeOff } from 'lucide-react'
 import Link from 'next/link'
 
 export function SignUpForm({ onToggle }: { onToggle: () => void }) {
@@ -15,6 +15,8 @@ export function SignUpForm({ onToggle }: { onToggle: () => void }) {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [passwordStrength, setPasswordStrength] = useState<'weak' | 'medium' | 'strong' | null>(null)
   const [passwordsMatch, setPasswordsMatch] = useState(true)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   useEffect(() => {
     if (password.length === 0) {
@@ -73,7 +75,7 @@ export function SignUpForm({ onToggle }: { onToggle: () => void }) {
     if (!passwordStrength) return 'bg-gray-200'
     if (passwordStrength === 'weak') return 'bg-red-500'
     if (passwordStrength === 'medium') return 'bg-yellow-500'
-    return 'bg-emerald-500'
+    return 'bg-blue-500'
   }
 
   const getStrengthWidth = () => {
@@ -86,7 +88,7 @@ export function SignUpForm({ onToggle }: { onToggle: () => void }) {
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <h2 className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+        <h2 className="text-3xl font-bold text-gray-900">
           Join MATCHFY
         </h2>
         <p className="text-gray-600">Create your account to start competing</p>
@@ -133,18 +135,32 @@ export function SignUpForm({ onToggle }: { onToggle: () => void }) {
 
         <div className="space-y-2">
           <Label htmlFor="password" className="text-gray-700">Password</Label>
-          <Input
-            id="password"
-            name="password"
-            type="password"
-            placeholder="••••••••"
-            required
-            minLength={8}
-            disabled={loading}
-            className="h-12"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <div className="relative">
+            <Input
+              id="password"
+              name="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="••••••••"
+              required
+              minLength={8}
+              disabled={loading}
+              className="h-12 pr-12"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+              disabled={loading}
+            >
+              {showPassword ? (
+                <EyeOff className="w-5 h-5" />
+              ) : (
+                <Eye className="w-5 h-5" />
+              )}
+            </button>
+          </div>
           
           {/* Password Strength Indicator */}
           {password.length > 0 && (
@@ -158,7 +174,7 @@ export function SignUpForm({ onToggle }: { onToggle: () => void }) {
                 <span className={`text-xs font-semibold ${
                   passwordStrength === 'weak' ? 'text-red-500' : 
                   passwordStrength === 'medium' ? 'text-yellow-500' : 
-                  'text-emerald-500'
+                  'text-blue-500'
                 }`}>
                   {passwordStrength === 'weak' ? 'Weak' : 
                    passwordStrength === 'medium' ? 'Medium' : 
@@ -174,23 +190,37 @@ export function SignUpForm({ onToggle }: { onToggle: () => void }) {
           <div className="relative">
             <Input
               id="confirm_password"
-              type="password"
+              type={showConfirmPassword ? "text" : "password"}
               placeholder="••••••••"
               required
               disabled={loading}
-              className={`h-12 pr-10 ${!passwordsMatch && confirmPassword.length > 0 ? 'border-red-500' : ''}`}
+              className={`h-12 pr-20 ${!passwordsMatch && confirmPassword.length > 0 ? 'border-red-500' : ''}`}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
-            {confirmPassword.length > 0 && (
-              <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                {passwordsMatch ? (
-                  <Check className="w-5 h-5 text-emerald-500" />
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+              {confirmPassword.length > 0 && (
+                <div>
+                  {passwordsMatch ? (
+                    <Check className="w-5 h-5 text-blue-500" />
+                  ) : (
+                    <X className="w-5 h-5 text-red-500" />
+                  )}
+                </div>
+              )}
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="text-gray-500 hover:text-gray-700 transition-colors"
+                disabled={loading}
+              >
+                {showConfirmPassword ? (
+                  <EyeOff className="w-5 h-5" />
                 ) : (
-                  <X className="w-5 h-5 text-red-500" />
+                  <Eye className="w-5 h-5" />
                 )}
-              </div>
-            )}
+              </button>
+            </div>
           </div>
           {!passwordsMatch && confirmPassword.length > 0 && (
             <p className="text-sm text-red-500">Passwords do not match</p>
@@ -205,7 +235,8 @@ export function SignUpForm({ onToggle }: { onToggle: () => void }) {
 
         <Button
           type="submit"
-          className="w-full h-12 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold hover:shadow-lg hover:shadow-emerald-500/30 transition-all"
+          className="w-full h-12 text-white font-semibold hover:shadow-lg transition-all"
+          style={{ backgroundColor: '#FFFF00', color: '#000000' }}
           disabled={loading || !passwordsMatch}
         >
           {loading ? (
@@ -222,7 +253,7 @@ export function SignUpForm({ onToggle }: { onToggle: () => void }) {
           Already have an account?{' '}
           <Link
             href="/sign-in"
-            className="text-emerald-600 hover:text-emerald-700 font-semibold hover:underline"
+            className="text-blue-600 hover:text-blue-700 font-semibold hover:underline"
           >
             Sign in
           </Link>

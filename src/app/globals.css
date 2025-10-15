@@ -181,4 +181,18 @@
   .mb-safe {
     margin-bottom: env(safe-area-inset-bottom);
   }
+  
+  /* Premium Shimmer Animation */
+  @keyframes shimmer {
+    0% {
+      background-position: -200% center;
+    }
+    100% {
+      background-position: 200% center;
+    }
+  }
+  
+  .animate-shimmer {
+    animation: shimmer 3s ease-in-out infinite;
+  }
 }

@@ -5,12 +5,13 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { signIn } from '@/app/actions/auth'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Eye, EyeOff } from 'lucide-react'
 import Link from 'next/link'
 
 export function SignInForm({ onToggle }: { onToggle: () => void }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -29,7 +30,7 @@ export function SignInForm({ onToggle }: { onToggle: () => void }) {
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <h2 className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+        <h2 className="text-3xl font-bold text-gray-900">
           Welcome Back
         </h2>
         <p className="text-gray-600">Sign in to your MATCHFY account</p>
@@ -51,15 +52,29 @@ export function SignInForm({ onToggle }: { onToggle: () => void }) {
 
         <div className="space-y-2">
           <Label htmlFor="password" className="text-gray-700">Password</Label>
-          <Input
-            id="password"
-            name="password"
-            type="password"
-            placeholder="••••••••"
-            required
-            disabled={loading}
-            className="h-12"
-          />
+          <div className="relative">
+            <Input
+              id="password"
+              name="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="••••••••"
+              required
+              disabled={loading}
+              className="h-12 pr-12"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+              disabled={loading}
+            >
+              {showPassword ? (
+                <EyeOff className="w-5 h-5" />
+              ) : (
+                <Eye className="w-5 h-5" />
+              )}
+            </button>
+          </div>
         </div>
 
         {error && (
@@ -70,7 +85,8 @@ export function SignInForm({ onToggle }: { onToggle: () => void }) {
 
         <Button
           type="submit"
-          className="w-full h-12 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold hover:shadow-lg hover:shadow-emerald-500/30 transition-all"
+          className="w-full h-12 text-white font-semibold hover:shadow-lg transition-all"
+          style={{ backgroundColor: '#FFFF00', color: '#000000' }}
           disabled={loading}
         >
           {loading ? (
@@ -87,7 +103,7 @@ export function SignInForm({ onToggle }: { onToggle: () => void }) {
           Don&apos;t have an account?{' '}
           <Link
             href="/sign-up"
-            className="text-emerald-600 hover:text-emerald-700 font-semibold hover:underline"
+            className="text-blue-600 hover:text-blue-700 font-semibold hover:underline"
           >
             Sign up
           </Link>

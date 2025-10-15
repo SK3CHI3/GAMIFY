@@ -9,33 +9,44 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-950">
-      {/* Navbar - Glassmorphism */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/10 backdrop-blur-md border-b border-white/20">
-        <div className="container mx-auto px-6 py-4">
+      {/* Navbar - Premium Glassmorphism - Mobile Optimized */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/10 backdrop-blur-xl border-b border-white/20 shadow-2xl">
+        <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-xl flex items-center justify-center shadow-lg" style={{ backgroundColor: '#FFFF00' }}>
-                <Gamepad2 className="w-6 h-6 text-gray-900" />
+            <motion.div 
+              className="flex items-center gap-2 sm:gap-3"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl flex items-center justify-center shadow-xl hover:shadow-yellow-500/50 transition-all duration-300 hover:scale-105" style={{ backgroundColor: '#FFFF00' }}>
+                <Gamepad2 className="w-5 h-5 sm:w-6 sm:h-6 text-gray-900" />
               </div>
-              <span className="text-2xl font-bold text-white">
+              <span className="text-lg sm:text-2xl font-bold text-white tracking-tight">
                 MATCHFY
               </span>
-            </div>
-            <div className="flex items-center gap-6">
+            </motion.div>
+            <motion.div 
+              className="flex items-center gap-2 sm:gap-4 md:gap-6"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+            >
               <Link 
                 href="/sign-in"
-                className="text-white hover:opacity-80 font-medium transition-colors"
+                className="text-white hover:opacity-80 font-medium transition-all duration-300 text-sm sm:text-base"
               >
                 Sign In
               </Link>
               <Link 
                 href="/sign-up"
-                className="px-6 py-2.5 font-semibold rounded-xl transition-all hover:scale-105"
+                className="px-3 py-2 sm:px-6 sm:py-2.5 text-sm sm:text-base font-semibold rounded-lg sm:rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-yellow-500/50"
                 style={{ backgroundColor: '#FFFF00', color: '#000000' }}
               >
-                Get Started
+                <span className="hidden sm:inline">Get Started</span>
+                <span className="sm:hidden">Join</span>
               </Link>
-            </div>
+            </motion.div>
           </div>
         </div>
       </nav>
@@ -47,8 +58,10 @@ export default function LandingPage() {
           <img
             src="/images/hero/hero.jpg"
             alt="Gaming Background"
-            className="w-full h-full min-h-screen object-cover object-center"
+            className="w-full h-full min-h-screen object-cover object-center scale-105 hover:scale-100 transition-transform duration-[3000ms]"
           />
+          {/* Premium overlay gradient */}
+          <div className="absolute inset-0 bg-gradient-to-t from-blue-950/40 via-transparent to-blue-950/20" />
         </div>
 
         {/* Content Container - Mobile Optimized */}
@@ -59,55 +72,103 @@ export default function LandingPage() {
             transition={{ duration: 0.6 }}
             className="space-y-4 sm:space-y-6 md:space-y-8"
           >
-            {/* Main Title - Mobile Optimized */}
+            {/* Main Title - Premium Mobile Optimized */}
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black leading-tight">
-              <span className="block text-white drop-shadow-2xl mb-1">Dominate in</span>
-              <span className="block drop-shadow-2xl mb-1" style={{ color: '#FFFF00' }}>
+              <motion.span 
+                className="block text-white drop-shadow-2xl mb-1"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                Dominate in
+              </motion.span>
+              <motion.span 
+                className="block drop-shadow-2xl mb-1 bg-gradient-to-r from-yellow-300 via-yellow-400 to-yellow-300 bg-clip-text text-transparent animate-shimmer"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                style={{ backgroundSize: '200% auto' }}
+              >
                 eFootball
-              </span>
-              <span className="block text-white drop-shadow-2xl">Tournaments</span>
+              </motion.span>
+              <motion.span 
+                className="block text-white drop-shadow-2xl"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.6 }}
+              >
+                Tournaments
+              </motion.span>
             </h1>
 
-            {/* Subtitle - Mobile Optimized */}
-            <p className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl text-white drop-shadow-lg max-w-3xl mx-auto font-medium px-2 sm:px-4">
+            {/* Subtitle - Premium Mobile Optimized */}
+            <motion.p 
+              className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl text-white drop-shadow-lg max-w-3xl mx-auto font-medium px-2 sm:px-4 leading-relaxed"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.8 }}
+            >
               Join the ultimate competitive platform. Automated brackets, instant verification, and real cash prizes await.
-            </p>
+            </motion.p>
 
-            {/* Buttons - Mobile Optimized */}
-            <div className="flex flex-col sm:flex-row justify-center gap-3 pt-3 sm:pt-4 max-w-md sm:max-w-none mx-auto">
+            {/* Buttons - Premium Mobile Optimized */}
+            <motion.div 
+              className="flex flex-col sm:flex-row justify-center gap-3 pt-3 sm:pt-4 max-w-md sm:max-w-none mx-auto"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 1 }}
+            >
               <Link
                 href="/sign-up"
-                className="px-6 sm:px-8 py-3.5 sm:py-4 text-sm sm:text-base md:text-lg font-bold rounded-xl shadow-xl hover:scale-105 transition-all w-full sm:w-auto"
+                className="group px-6 sm:px-8 py-3.5 sm:py-4 text-sm sm:text-base md:text-lg font-bold rounded-xl shadow-2xl hover:scale-105 transition-all duration-300 w-full sm:w-auto hover:shadow-yellow-500/50 relative overflow-hidden"
                 style={{ backgroundColor: '#FFFF00', color: '#000000' }}
               >
-                <span className="flex items-center justify-center gap-2">
+                <span className="relative z-10 flex items-center justify-center gap-2">
                   Start Competing Now
-                  <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
                 </span>
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
               </Link>
-              <button className="px-6 sm:px-8 py-3.5 sm:py-4 text-sm sm:text-base md:text-lg bg-white/10 backdrop-blur-sm border-2 border-white text-white font-bold rounded-xl hover:bg-white/20 transition-all w-full sm:w-auto">
+              <button className="group px-6 sm:px-8 py-3.5 sm:py-4 text-sm sm:text-base md:text-lg bg-white/10 backdrop-blur-md border-2 border-white/40 text-white font-bold rounded-xl hover:bg-white/20 hover:border-white/60 transition-all duration-300 w-full sm:w-auto hover:shadow-xl">
                 <span className="flex items-center justify-center gap-2">
-                  <Play className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <Play className="w-4 h-4 sm:w-5 sm:h-5 group-hover:scale-110 transition-transform" />
                   Watch Demo
                 </span>
               </button>
-            </div>
+            </motion.div>
 
-            {/* Stats - Mobile Optimized */}
-            <div className="flex justify-center gap-4 sm:gap-6 md:gap-8 lg:gap-12 pt-4 sm:pt-6 md:pt-8 flex-wrap">
-              <div className="text-center min-w-[80px] sm:min-w-0">
-                <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black drop-shadow-lg" style={{ color: '#FFFF00' }}>1000+</div>
-                <div className="text-[10px] sm:text-xs md:text-sm lg:text-base text-white drop-shadow-md mt-0.5 sm:mt-1">Active Players</div>
-              </div>
-              <div className="text-center min-w-[80px] sm:min-w-0">
-                <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black drop-shadow-lg" style={{ color: '#FFFF00' }}>50+</div>
-                <div className="text-[10px] sm:text-xs md:text-sm lg:text-base text-white drop-shadow-md mt-0.5 sm:mt-1">Live Tournaments</div>
-              </div>
-              <div className="text-center min-w-[80px] sm:min-w-0">
-                <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black drop-shadow-lg" style={{ color: '#FFFF00' }}>KES 500K</div>
-                <div className="text-[10px] sm:text-xs md:text-sm lg:text-base text-white drop-shadow-md mt-0.5 sm:mt-1">In Prizes</div>
-              </div>
-            </div>
+            {/* Stats - Premium Mobile Optimized */}
+            <motion.div 
+              className="flex justify-center gap-4 sm:gap-6 md:gap-8 lg:gap-12 pt-4 sm:pt-6 md:pt-8 flex-wrap"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 1.2 }}
+            >
+              <motion.div 
+                className="text-center min-w-[80px] sm:min-w-0 group"
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.2 }}
+              >
+                <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black drop-shadow-2xl group-hover:drop-shadow-[0_0_30px_rgba(255,255,0,0.5)] transition-all" style={{ color: '#FFFF00' }}>1000+</div>
+                <div className="text-[10px] sm:text-xs md:text-sm lg:text-base text-white drop-shadow-md mt-0.5 sm:mt-1 font-semibold">Active Players</div>
+              </motion.div>
+              <motion.div 
+                className="text-center min-w-[80px] sm:min-w-0 group"
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.2 }}
+              >
+                <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black drop-shadow-2xl group-hover:drop-shadow-[0_0_30px_rgba(255,255,0,0.5)] transition-all" style={{ color: '#FFFF00' }}>50+</div>
+                <div className="text-[10px] sm:text-xs md:text-sm lg:text-base text-white drop-shadow-md mt-0.5 sm:mt-1 font-semibold">Live Tournaments</div>
+              </motion.div>
+              <motion.div 
+                className="text-center min-w-[80px] sm:min-w-0 group"
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.2 }}
+              >
+                <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black drop-shadow-2xl group-hover:drop-shadow-[0_0_30px_rgba(255,255,0,0.5)] transition-all" style={{ color: '#FFFF00' }}>KES 500K</div>
+                <div className="text-[10px] sm:text-xs md:text-sm lg:text-base text-white drop-shadow-md mt-0.5 sm:mt-1 font-semibold">In Prizes</div>
+              </motion.div>
+            </motion.div>
           </motion.div>
         </div>
       </section>
@@ -157,13 +218,19 @@ export default function LandingPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="group relative overflow-hidden rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 p-8 hover:bg-white/15 transition-all hover:scale-105"
+                whileHover={{ y: -8 }}
+                className="group relative overflow-hidden rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 p-8 hover:bg-white/15 hover:border-white/30 transition-all duration-300 hover:shadow-2xl hover:shadow-yellow-500/20"
               >
-                <div className="w-14 h-14 rounded-2xl p-3 mb-6 group-hover:scale-110 transition-transform" style={{ backgroundColor: '#FFFF00' }}>
-                  <feature.icon className="w-full h-full text-gray-900" />
+                {/* Premium glow effect on hover */}
+                <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/0 via-yellow-500/0 to-yellow-500/0 group-hover:from-yellow-500/5 group-hover:via-yellow-500/10 group-hover:to-yellow-500/5 transition-all duration-300" />
+                
+                <div className="relative z-10">
+                  <div className="w-14 h-14 rounded-2xl p-3 mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg group-hover:shadow-yellow-500/50" style={{ backgroundColor: '#FFFF00' }}>
+                    <feature.icon className="w-full h-full text-gray-900" />
+                  </div>
+                  <h3 className="text-xl font-bold mb-3 text-white group-hover:text-yellow-100 transition-colors">{feature.title}</h3>
+                  <p className="text-gray-300 group-hover:text-gray-200 transition-colors leading-relaxed">{feature.description}</p>
                 </div>
-                <h3 className="text-xl font-bold mb-3 text-white">{feature.title}</h3>
-                <p className="text-gray-300">{feature.description}</p>
               </motion.div>
             ))}
           </div>
@@ -215,15 +282,20 @@ export default function LandingPage() {
                 viewport={{ once: true }}
                 className="relative"
               >
-                <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all hover:bg-white/15">
-                  <div className="flex items-center justify-between mb-6">
-                    <span className="text-5xl font-black text-white">{item.step}</span>
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#FFFF00' }}>
-                      <item.icon className="w-6 h-6 text-gray-900" />
+                <div className="group bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:shadow-yellow-500/20 transition-all duration-300 hover:bg-white/15 hover:border-white/30 hover:-translate-y-2">
+                  {/* Premium gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/0 to-blue-500/0 group-hover:from-yellow-500/5 group-hover:to-blue-500/5 rounded-2xl transition-all duration-300" />
+                  
+                  <div className="relative z-10">
+                    <div className="flex items-center justify-between mb-6">
+                      <span className="text-5xl font-black text-white group-hover:text-yellow-100 transition-colors">{item.step}</span>
+                      <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-yellow-500/50 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300" style={{ backgroundColor: '#FFFF00' }}>
+                        <item.icon className="w-6 h-6 text-gray-900" />
+                      </div>
                     </div>
+                    <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-yellow-100 transition-colors">{item.title}</h3>
+                    <p className="text-gray-300 group-hover:text-gray-200 leading-relaxed transition-colors">{item.description}</p>
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-3">{item.title}</h3>
-                  <p className="text-gray-300 leading-relaxed">{item.description}</p>
                 </div>
                 {index < 2 && (
                   <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2 z-10">
@@ -358,13 +430,14 @@ export default function LandingPage() {
             </p>
             <Link
               href="/sign-up"
-              className="group inline-flex px-10 py-5 font-bold text-lg rounded-xl shadow-xl hover:shadow-2xl transition-all hover:scale-105"
+              className="group inline-flex px-10 py-5 font-bold text-lg rounded-xl shadow-2xl hover:shadow-yellow-500/50 transition-all duration-300 hover:scale-105 relative overflow-hidden"
               style={{ backgroundColor: '#FFFF00', color: '#000000' }}
             >
-              <span className="flex items-center gap-3">
+              <span className="relative z-10 flex items-center gap-3">
                 Get Started Free
-                <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform duration-300" />
               </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
             </Link>
           </motion.div>
         </div>
