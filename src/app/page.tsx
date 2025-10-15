@@ -59,14 +59,14 @@ export default function LandingPage() {
             src="/images/hero/hero.jpg"
             alt="Gaming Background"
             className="w-full h-full min-h-screen object-cover object-center scale-105 hover:scale-100 transition-transform duration-[3000ms]"
-          />
+        />
           {/* Premium overlay gradient */}
           <div className="absolute inset-0 bg-gradient-to-t from-blue-950/40 via-transparent to-blue-950/20" />
         </div>
-
+        
         {/* Content Container - Mobile Optimized */}
         <div className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 text-center pt-20 sm:pt-24 pb-12 sm:pb-16">
-          <motion.div
+            <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -77,9 +77,9 @@ export default function LandingPage() {
               <motion.span 
                 className="block text-white drop-shadow-2xl mb-1"
                 initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+              animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-              >
+            >
                 Dominate in
               </motion.span>
               <motion.span 
@@ -89,7 +89,7 @@ export default function LandingPage() {
                 transition={{ duration: 0.6, delay: 0.4 }}
                 style={{ backgroundSize: '200% auto' }}
               >
-                eFootball
+                  eFootball
               </motion.span>
               <motion.span 
                 className="block text-white drop-shadow-2xl"
@@ -99,7 +99,7 @@ export default function LandingPage() {
               >
                 Tournaments
               </motion.span>
-            </h1>
+              </h1>
 
             {/* Subtitle - Premium Mobile Optimized */}
             <motion.p 
@@ -108,7 +108,7 @@ export default function LandingPage() {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.8 }}
             >
-              Join the ultimate competitive platform. Automated brackets, instant verification, and real cash prizes await.
+                Join the ultimate competitive platform. Automated brackets, instant verification, and real cash prizes await.
             </motion.p>
 
             {/* Buttons - Premium Mobile Optimized */}
@@ -118,23 +118,23 @@ export default function LandingPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 1 }}
             >
-              <Link
-                href="/sign-up"
+                <Link
+                  href="/sign-up"
                 className="group px-6 sm:px-8 py-3.5 sm:py-4 text-sm sm:text-base md:text-lg font-bold rounded-xl shadow-2xl hover:scale-105 transition-all duration-300 w-full sm:w-auto hover:shadow-yellow-500/50 relative overflow-hidden"
                 style={{ backgroundColor: '#FFFF00', color: '#000000' }}
-              >
+                >
                 <span className="relative z-10 flex items-center justify-center gap-2">
-                  Start Competing Now
+                    Start Competing Now
                   <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
-                </span>
+                  </span>
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-              </Link>
+                </Link>
               <button className="group px-6 sm:px-8 py-3.5 sm:py-4 text-sm sm:text-base md:text-lg bg-white/10 backdrop-blur-md border-2 border-white/40 text-white font-bold rounded-xl hover:bg-white/20 hover:border-white/60 transition-all duration-300 w-full sm:w-auto hover:shadow-xl">
                 <span className="flex items-center justify-center gap-2">
                   <Play className="w-4 h-4 sm:w-5 sm:h-5 group-hover:scale-110 transition-transform" />
-                  Watch Demo
-                </span>
-              </button>
+                    Watch Demo
+                  </span>
+                </button>
             </motion.div>
 
             {/* Stats - Premium Mobile Optimized */}
@@ -287,7 +287,7 @@ export default function LandingPage() {
                   <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/0 to-blue-500/0 group-hover:from-yellow-500/5 group-hover:to-blue-500/5 rounded-2xl transition-all duration-300" />
                   
                   <div className="relative z-10">
-                    <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center justify-between mb-6">
                       <span className="text-5xl font-black text-white group-hover:text-yellow-100 transition-colors">{item.step}</span>
                       <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-yellow-500/50 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300" style={{ backgroundColor: '#FFFF00' }}>
                         <item.icon className="w-6 h-6 text-gray-900" />

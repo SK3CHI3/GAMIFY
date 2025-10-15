@@ -87,10 +87,10 @@ export function TournamentsTab() {
     <>
       <div className="container mx-auto px-4 py-6 space-y-6 max-w-7xl">
         {/* Header */}
-        <div className="backdrop-blur-xl bg-white/80 border border-white/40 rounded-2xl p-6 shadow-lg">
+        <div className="backdrop-blur-xl bg-gradient-to-br from-blue-50/80 via-white/80 to-yellow-50/80 border border-blue-200/50 rounded-2xl p-6 shadow-lg">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center shadow-lg">
-              <Trophy className="w-6 h-6 text-gray-700" />
+            <div className="w-12 h-12 rounded-xl bg-blue-500 flex items-center justify-center shadow-lg">
+              <Trophy className="w-6 h-6 text-white" />
             </div>
             <div>
               <h1 className="text-2xl font-bold text-gray-900">
@@ -103,24 +103,24 @@ export function TournamentsTab() {
 
         {/* Tournaments Tabs */}
         <Tabs defaultValue="registration" className="space-y-6">
-          <TabsList className="backdrop-blur-xl bg-white/80 border border-blue-200/50 p-1 shadow-lg w-full">
+          <TabsList className="backdrop-blur-xl bg-gradient-to-r from-blue-50/60 via-white/80 to-yellow-50/60 border border-blue-200/50 p-1 shadow-lg w-full rounded-2xl">
             <TabsTrigger 
               value="registration" 
-              className="flex-1 data-[state=active]:bg-blue-500 data-[state=active]:text-white"
+              className="flex-1 data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300 hover:bg-blue-50"
             >
               <Clock className="w-4 h-4 mr-2" />
               Registration
             </TabsTrigger>
             <TabsTrigger 
               value="ongoing"
-              className="flex-1 data-[state=active]:bg-blue-500 data-[state=active]:text-white"
+              className="flex-1 data-[state=active]:bg-yellow-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300 hover:bg-yellow-50"
             >
               <Trophy className="w-4 h-4 mr-2" />
               Ongoing
             </TabsTrigger>
             <TabsTrigger 
               value="completed"
-              className="flex-1 data-[state=active]:bg-blue-500 data-[state=active]:text-white"
+              className="flex-1 data-[state=active]:bg-green-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300 hover:bg-green-50"
             >
               <CheckCircle className="w-4 h-4 mr-2" />
               Completed
