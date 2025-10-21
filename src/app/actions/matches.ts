@@ -21,7 +21,7 @@ export async function submitMatchResult(formData: FormData) {
   const fileExt = screenshot.name.split('.').pop()
   const fileName = `${user.id}/${matchId}-${Date.now()}.${fileExt}`
   
-  const { error: uploadError, data: uploadData } = await supabase.storage
+  const { error: uploadError } = await supabase.storage
     .from('match-screenshots')
     .upload(fileName, screenshot)
 
@@ -142,7 +142,7 @@ async function verifyMatchResults(matchId: string) {
       .eq('user_id', loserId)
 
     // Advance winner to next round
-    await advanceToNextRound(matchId, winnerId!, match.tournament.format)
+    await advanceToNextRound(matchId, winnerId!)
 
     revalidatePath(`/dashboard/tournaments/${tournament_id}`)
   }
@@ -174,8 +174,7 @@ async function updatePlayerStats(winnerId: string, loserId: string) {
 
 async function advanceToNextRound(
   matchId: string,
-  winnerId: string,
-  format: string
+  winnerId: string
 ) {
   const supabase = await createClient()
 
@@ -273,8 +272,7 @@ export async function resolveDispute(
   // Advance winner
   await advanceToNextRound(
     dispute.match_id,
-    winnerId,
-    dispute.matches.tournament.format
+    winnerId
   )
 
   revalidatePath('/admin/disputes')

@@ -9,13 +9,13 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "MATCHFY - eFootball Tournament Platform",
+  title: "GOALDEN - eFootball Tournament Platform",
   description: "Compete in automated eFootball tournaments. Submit scores, win prizes, and climb the leaderboard.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "MATCHFY",
+    title: "GOALDEN",
   },
 };
 

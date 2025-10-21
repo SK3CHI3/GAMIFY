@@ -22,10 +22,16 @@ export default function SignUpPage() {
         
         <div className="relative z-10 max-w-md text-white space-y-8">
           <Link href="/" className="flex items-center gap-3">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl" style={{ backgroundColor: '#FFFF00' }}>
-              <Trophy className="w-8 h-8 text-gray-900" />
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl overflow-hidden" style={{ backgroundColor: '#FFFF00' }}>
+      <Image
+        src="/images/GOALDEN LOGO/GOALDEN_logo.png"
+        alt="GOALDEN Logo"
+        width={120}
+        height={120}
+        className="w-full h-full object-contain"
+      />
             </div>
-            <span className="text-3xl font-bold text-white">MATCHFY</span>
+            <span className="text-3xl font-bold text-white">GOALDEN</span>
           </Link>
           
           <motion.div
@@ -72,7 +78,7 @@ export default function SignUpPage() {
                 <Trophy className="w-6 h-6 text-gray-900" />
               </div>
               <span className="text-2xl font-bold text-gray-900">
-                MATCHFY
+                GOALDEN
               </span>
             </Link>
           </div>
@@ -82,7 +88,7 @@ export default function SignUpPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
-            <SignUpForm onToggle={() => {}} />
+            <SignUpForm />
           </motion.div>
         </div>
       </div>

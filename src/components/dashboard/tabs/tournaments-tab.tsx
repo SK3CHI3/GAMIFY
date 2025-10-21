@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { TournamentCard } from '@/components/tournaments/tournament-card'
 import { TournamentDetail } from '@/components/tournaments/tournament-detail'
 import { TournamentBracket } from '@/components/tournaments/tournament-bracket'
-import { Trophy, Clock, CheckCircle, Loader2, X } from 'lucide-react'
+import { Trophy, Clock, CheckCircle, Loader2 } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
 

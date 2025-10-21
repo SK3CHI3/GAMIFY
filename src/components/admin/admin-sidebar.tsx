@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { LayoutDashboard, Trophy, Users, AlertCircle, Plus } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -39,7 +40,18 @@ export function AdminSidebar() {
   return (
     <aside className="fixed left-0 top-0 h-screen w-64 glass border-r border-white/20 p-6 z-50">
       <div className="mb-8">
-        <h2 className="text-2xl font-bold gradient-text">MATCHFY</h2>
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg overflow-hidden" style={{ backgroundColor: '#FFFF00' }}>
+            <Image
+              src="/images/GOALDEN LOGO/GOALDEN_logo.png"
+              alt="GOALDEN Logo"
+              width={120}
+              height={120}
+              className="w-full h-full object-contain"
+            />
+          </div>
+          <h2 className="text-2xl font-bold gradient-text">GOALDEN</h2>
+        </div>
         <p className="text-sm text-gray-600">Admin Panel</p>
       </div>
 

@@ -8,7 +8,7 @@ import { signIn } from '@/app/actions/auth'
 import { Loader2, Eye, EyeOff } from 'lucide-react'
 import Link from 'next/link'
 
-export function SignInForm({ onToggle }: { onToggle: () => void }) {
+export function SignInForm() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -33,7 +33,7 @@ export function SignInForm({ onToggle }: { onToggle: () => void }) {
         <h2 className="text-3xl font-bold text-gray-900">
           Welcome Back
         </h2>
-        <p className="text-gray-600">Sign in to your MATCHFY account</p>
+        <p className="text-gray-600">Sign in to your GOALDEN account</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">

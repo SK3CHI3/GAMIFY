@@ -1,4 +1,4 @@
-# MATCHFY - eFootball Tournament Platform
+# GOALDEN - eFootball Tournament Platform
 
 A modern, mobile-first Progressive Web App for automated eFootball tournaments with real-time bracket management, match verification, and prize distribution.
 
@@ -257,4 +257,524 @@ For issues or questions:
 
 ---
 
+Built with ❤️ by the GOALDEN Team
+
+
+│   ├── auth/             # Authentication forms
+
+│   ├── dashboard/        # Dashboard components
+
+│   ├── layout/           # Layout components (navigation)
+
+│   ├── matches/          # Match submission forms
+
+│   └── tournaments/      # Tournament components
+
+└── lib/
+
+    ├── supabase/         # Supabase client configuration
+
+    ├── bracket-generator.ts  # Tournament bracket algorithms
+
+    ├── database.types.ts     # TypeScript types from database
+
+    └── utils.ts          # Utility functions
+
+```
+
+
+
+## Key Workflows
+
+
+
+### Tournament Creation (Admin)
+
+1. Admin creates tournament with format, slots, entry fee, mode
+
+2. System calculates prize pool and sets registration status
+
+3. Tournament appears on player dashboard
+
+
+
+### Player Registration
+
+1. Player browses available tournaments
+
+2. Registers for tournament (payment placeholder)
+
+3. Added to confirmed participants or waitlist
+
+
+
+### Match Flow
+
+1. Tournament starts → Bracket generated
+
+2. Players paired → Match status set to "ongoing"
+
+3. Both players submit score + screenshot
+
+4. **If scores match**: Winner advances automatically
+
+5. **If scores conflict**: Admin dispute review
+
+
+
+### Dispute Resolution (Admin)
+
+1. Admin reviews both screenshots side-by-side
+
+2. Determines correct winner
+
+3. Winner advances, loser eliminated
+
+
+
+## API Integration Points (To Be Implemented)
+
+
+
+### Twilio WhatsApp Notifications
+
+```typescript
+
+// src/app/actions/notifications.ts
+
+export async function sendWhatsAppNotification(
+
+  phoneNumber: string,
+
+  message: string
+
+) {
+
+  // Twilio API implementation
+
+}
+
+```
+
+
+
+### M-PESA Payment Integration
+
+```typescript
+
+// src/app/actions/payments.ts
+
+export async function initiateMpesaPayment(
+
+  phoneNumber: string,
+
+  amount: number,
+
+  tournamentId: string
+
+) {
+
+  // M-PESA Daraja API implementation
+
+}
+
+```
+
+
+
+## Security
+
+
+
+- **Row Level Security (RLS)** - Database-level access control
+
+- **Server Actions** - All mutations happen server-side
+
+- **Input Validation** - Client and server-side validation
+
+- **File Upload Limits** - Max 5MB for screenshots
+
+- **Anti-Fraud** - One account per phone number, device fingerprinting
+
+
+
+## Performance Optimizations
+
+
+
+- **Image Optimization** - Next.js automatic image optimization
+
+- **Code Splitting** - Dynamic imports for large components
+
+- **PWA Caching** - Service worker for offline functionality
+
+- **Optimistic Updates** - Instant UI feedback
+
+
+
+## Deployment
+
+
+
+### Vercel (Recommended)
+
+```bash
+
+vercel deploy
+
+```
+
+
+
+### Other Platforms
+
+- Configure environment variables
+
+- Set Node.js version to 18+
+
+- Configure build command: `npm run build`
+
+- Configure start command: `npm start`
+
+
+
+## Contributing
+
+
+
+1. Fork the repository
+
+2. Create a feature branch
+
+3. Commit your changes
+
+4. Push to the branch
+
+5. Open a Pull Request
+
+
+
+## License
+
+
+
+See LICENSE file for details.
+
+
+
+## Support
+
+
+
+For issues or questions:
+
+- Open an issue on GitHub
+
+- Contact: support@matchfy.com
+
+
+
+## Roadmap
+
+
+
+### Phase 1 (Current) ✅
+
+- Core tournament functionality
+
+- Match verification system
+
+- Real-time features
+
+
+
+### Phase 2 (Next)
+
+- M-PESA payment integration
+
+- WhatsApp notifications
+
+- Mobile apps (iOS/Android)
+
+
+
+### Phase 3 (Future)
+
+- Multi-game support
+
+- Streaming integration
+
+- Betting/predictions
+
+- Tournament templates
+
+- API for third-party integrations
+
+
+
+---
+
+
+
 Built with ❤️ by the MATCHFY Team
+
+
+│   ├── auth/             # Authentication forms
+
+│   ├── dashboard/        # Dashboard components
+
+│   ├── layout/           # Layout components (navigation)
+
+│   ├── matches/          # Match submission forms
+
+│   └── tournaments/      # Tournament components
+
+└── lib/
+
+    ├── supabase/         # Supabase client configuration
+
+    ├── bracket-generator.ts  # Tournament bracket algorithms
+
+    ├── database.types.ts     # TypeScript types from database
+
+    └── utils.ts          # Utility functions
+
+```
+
+
+
+## Key Workflows
+
+
+
+### Tournament Creation (Admin)
+
+1. Admin creates tournament with format, slots, entry fee, mode
+
+2. System calculates prize pool and sets registration status
+
+3. Tournament appears on player dashboard
+
+
+
+### Player Registration
+
+1. Player browses available tournaments
+
+2. Registers for tournament (payment placeholder)
+
+3. Added to confirmed participants or waitlist
+
+
+
+### Match Flow
+
+1. Tournament starts → Bracket generated
+
+2. Players paired → Match status set to "ongoing"
+
+3. Both players submit score + screenshot
+
+4. **If scores match**: Winner advances automatically
+
+5. **If scores conflict**: Admin dispute review
+
+
+
+### Dispute Resolution (Admin)
+
+1. Admin reviews both screenshots side-by-side
+
+2. Determines correct winner
+
+3. Winner advances, loser eliminated
+
+
+
+## API Integration Points (To Be Implemented)
+
+
+
+### Twilio WhatsApp Notifications
+
+```typescript
+
+// src/app/actions/notifications.ts
+
+export async function sendWhatsAppNotification(
+
+  phoneNumber: string,
+
+  message: string
+
+) {
+
+  // Twilio API implementation
+
+}
+
+```
+
+
+
+### M-PESA Payment Integration
+
+```typescript
+
+// src/app/actions/payments.ts
+
+export async function initiateMpesaPayment(
+
+  phoneNumber: string,
+
+  amount: number,
+
+  tournamentId: string
+
+) {
+
+  // M-PESA Daraja API implementation
+
+}
+
+```
+
+
+
+## Security
+
+
+
+- **Row Level Security (RLS)** - Database-level access control
+
+- **Server Actions** - All mutations happen server-side
+
+- **Input Validation** - Client and server-side validation
+
+- **File Upload Limits** - Max 5MB for screenshots
+
+- **Anti-Fraud** - One account per phone number, device fingerprinting
+
+
+
+## Performance Optimizations
+
+
+
+- **Image Optimization** - Next.js automatic image optimization
+
+- **Code Splitting** - Dynamic imports for large components
+
+- **PWA Caching** - Service worker for offline functionality
+
+- **Optimistic Updates** - Instant UI feedback
+
+
+
+## Deployment
+
+
+
+### Vercel (Recommended)
+
+```bash
+
+vercel deploy
+
+```
+
+
+
+### Other Platforms
+
+- Configure environment variables
+
+- Set Node.js version to 18+
+
+- Configure build command: `npm run build`
+
+- Configure start command: `npm start`
+
+
+
+## Contributing
+
+
+
+1. Fork the repository
+
+2. Create a feature branch
+
+3. Commit your changes
+
+4. Push to the branch
+
+5. Open a Pull Request
+
+
+
+## License
+
+
+
+See LICENSE file for details.
+
+
+
+## Support
+
+
+
+For issues or questions:
+
+- Open an issue on GitHub
+
+- Contact: support@matchfy.com
+
+
+
+## Roadmap
+
+
+
+### Phase 1 (Current) ✅
+
+- Core tournament functionality
+
+- Match verification system
+
+- Real-time features
+
+
+
+### Phase 2 (Next)
+
+- M-PESA payment integration
+
+- WhatsApp notifications
+
+- Mobile apps (iOS/Android)
+
+
+
+### Phase 3 (Future)
+
+- Multi-game support
+
+- Streaming integration
+
+- Betting/predictions
+
+- Tournament templates
+
+- API for third-party integrations
+
+
+
+---
+
+
+
+Built with ❤️ by the MATCHFY Team
+
+

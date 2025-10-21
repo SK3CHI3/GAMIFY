@@ -1,0 +1,500 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { 
+  Mail, 
+  Send, 
+  Bell, 
+  MessageSquare, 
+  Phone,
+  TrendingUp,
+  CheckCircle,
+  Clock,
+  AlertCircle,
+  Plus
+} from 'lucide-react'
+import { format } from 'date-fns'
+
+interface Announcement {
+  id: string
+  title: string
+  content: string
+  type: 'general' | 'tournament' | 'maintenance' | 'urgent'
+  target: 'all' | 'active' | 'tournament' | 'specific'
+  created_at: string
+  sent_at: string
+  status: 'draft' | 'scheduled' | 'sent' | 'failed'
+  recipients: number
+  opened: number
+  clicked: number
+}
+
+interface Message {
+  id: string
+  player_name: string
+  player_email: string
+  subject: string
+  content: string
+  status: 'unread' | 'read' | 'replied'
+  created_at: string
+  priority: 'low' | 'medium' | 'high' | 'urgent'
+}
+
+interface CommunicationStats {
+  totalAnnouncements: number
+  totalMessages: number
+  unreadMessages: number
+  responseRate: number
+  avgResponseTime: number
+  engagementRate: number
+}
+
+export function AdminCommunication() {
+  const [loading, setLoading] = useState(true)
+  const [announcements, setAnnouncements] = useState<Announcement[]>([])
+  const [messages, setMessages] = useState<Message[]>([])
+  const [stats, setStats] = useState<CommunicationStats | null>(null)
+  const [activeTab, setActiveTab] = useState('announcements')
+  const [showCompose, setShowCompose] = useState(false)
+  const [selectedMessage, setSelectedMessage] = useState<Message | null>(null)
+
+  // Compose form state
+  const [composeData, setComposeData] = useState({
+    title: '',
+    content: '',
+    type: 'general',
+    target: 'all',
+    scheduledAt: ''
+  })
+
+  useEffect(() => {
+    async function loadCommunicationData() {
+      try {
+        // Mock data for now - in real implementation, these would come from database
+        const mockAnnouncements: Announcement[] = [
+          {
+            id: '1',
+            title: 'New Tournament Format Available',
+            content: 'We\'re excited to announce the launch of double elimination tournaments!',
+            type: 'tournament',
+            target: 'all',
+            created_at: new Date().toISOString(),
+            sent_at: new Date(Date.now() - 86400000).toISOString(),
+            status: 'sent',
+            recipients: 150,
+            opened: 120,
+            clicked: 45
+          },
+          {
+            id: '2',
+            title: 'Scheduled Maintenance',
+            content: 'Our platform will be under maintenance from 2 AM to 4 AM tomorrow.',
+            type: 'maintenance',
+            target: 'all',
+            created_at: new Date(Date.now() - 172800000).toISOString(),
+            sent_at: new Date(Date.now() - 172800000).toISOString(),
+            status: 'sent',
+            recipients: 150,
+            opened: 95,
+            clicked: 12
+          }
+        ]
+
+        const mockMessages: Message[] = [
+          {
+            id: '1',
+            player_name: 'John Doe',
+            player_email: 'john@example.com',
+            subject: 'Prize Payment Issue',
+            content: 'I haven\'t received my prize payment from last week\'s tournament.',
+            status: 'unread',
+            created_at: new Date().toISOString(),
+            priority: 'high'
+          },
+          {
+            id: '2',
+            player_name: 'Jane Smith',
+            player_email: 'jane@example.com',
+            subject: 'Tournament Registration',
+            content: 'I\'m having trouble registering for the upcoming tournament.',
+            status: 'read',
+            created_at: new Date(Date.now() - 3600000).toISOString(),
+            priority: 'medium'
+          }
+        ]
+
+        setAnnouncements(mockAnnouncements)
+        setMessages(mockMessages)
+
+        setStats({
+          totalAnnouncements: mockAnnouncements.length,
+          totalMessages: mockMessages.length,
+          unreadMessages: mockMessages.filter(m => m.status === 'unread').length,
+          responseRate: 85,
+          avgResponseTime: 2.5,
+          engagementRate: 78
+        })
+
+      } catch (error) {
+        console.error('Error loading communication data:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadCommunicationData()
+  }, [])
+
+  const handleSendAnnouncement = async () => {
+    // Implement announcement sending logic
+    console.log('Sending announcement:', composeData)
+    setShowCompose(false)
+    setComposeData({ title: '', content: '', type: 'general', target: 'all', scheduledAt: '' })
+  }
+
+
+  const getTypeColor = (type: string) => {
+    switch (type) {
+      case 'urgent': return 'bg-red-100 border-red-300 text-red-800'
+      case 'tournament': return 'bg-blue-100 border-blue-300 text-blue-800'
+      case 'maintenance': return 'bg-yellow-100 border-yellow-300 text-yellow-800'
+      default: return 'bg-gray-100 border-gray-300 text-gray-800'
+    }
+  }
+
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case 'urgent': return 'bg-red-100 border-red-300 text-red-800'
+      case 'high': return 'bg-orange-100 border-orange-300 text-orange-800'
+      case 'medium': return 'bg-yellow-100 border-yellow-300 text-yellow-800'
+      default: return 'bg-gray-100 border-gray-300 text-gray-800'
+    }
+  }
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'sent': return CheckCircle
+      case 'scheduled': return Clock
+      case 'failed': return AlertCircle
+      default: return Clock
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600"></div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-8">
+      {/* Header with Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Card className="glass-card border-none shadow-premium">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Total Announcements</p>
+                <p className="text-2xl font-bold text-gray-900">{stats?.totalAnnouncements || 0}</p>
+              </div>
+              <Mail className="h-8 w-8 text-blue-600" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="glass-card border-none shadow-premium">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Unread Messages</p>
+                <p className="text-2xl font-bold text-red-600">{stats?.unreadMessages || 0}</p>
+              </div>
+              <Bell className="h-8 w-8 text-red-600" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="glass-card border-none shadow-premium">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Response Rate</p>
+                <p className="text-2xl font-bold text-green-600">{stats?.responseRate || 0}%</p>
+              </div>
+              <TrendingUp className="h-8 w-8 text-green-600" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="glass-card border-none shadow-premium">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Avg Response Time</p>
+                <p className="text-2xl font-bold text-amber-600">{stats?.avgResponseTime || 0}h</p>
+              </div>
+              <Clock className="h-8 w-8 text-amber-600" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Tabs */}
+      <Card className="glass-card border-none shadow-premium">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex gap-2">
+              <Button
+                variant={activeTab === 'announcements' ? 'default' : 'outline'}
+                onClick={() => setActiveTab('announcements')}
+              >
+                <Mail className="h-4 w-4 mr-2" />
+                Announcements
+              </Button>
+              <Button
+                variant={activeTab === 'messages' ? 'default' : 'outline'}
+                onClick={() => setActiveTab('messages')}
+              >
+                <MessageSquare className="h-4 w-4 mr-2" />
+                Messages
+              </Button>
+            </div>
+            <Button
+              onClick={() => setShowCompose(true)}
+              className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Compose
+            </Button>
+          </div>
+
+          {/* Announcements Tab */}
+          {activeTab === 'announcements' && (
+            <div className="space-y-4">
+              {announcements.map((announcement) => {
+                const StatusIcon = getStatusIcon(announcement.status)
+                const openRate = Math.round((announcement.opened / announcement.recipients) * 100)
+                const clickRate = Math.round((announcement.clicked / announcement.recipients) * 100)
+
+                return (
+                  <div key={announcement.id} className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-all">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <StatusIcon className="h-5 w-5 text-gray-600" />
+                        <div>
+                          <h3 className="font-bold text-gray-900">{announcement.title}</h3>
+                          <p className="text-sm text-gray-600">{announcement.content}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge className={getTypeColor(announcement.type)}>
+                          {announcement.type}
+                        </Badge>
+                        <Badge variant="outline">
+                          {announcement.status}
+                        </Badge>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                      <div className="text-center p-2 bg-gray-50 rounded">
+                        <div className="font-bold text-gray-900">{announcement.recipients}</div>
+                        <div className="text-gray-600">Recipients</div>
+                      </div>
+                      <div className="text-center p-2 bg-gray-50 rounded">
+                        <div className="font-bold text-blue-600">{openRate}%</div>
+                        <div className="text-gray-600">Open Rate</div>
+                      </div>
+                      <div className="text-center p-2 bg-gray-50 rounded">
+                        <div className="font-bold text-green-600">{clickRate}%</div>
+                        <div className="text-gray-600">Click Rate</div>
+                      </div>
+                      <div className="text-center p-2 bg-gray-50 rounded">
+                        <div className="font-bold text-gray-900">
+                          {format(new Date(announcement.sent_at), 'MMM d, HH:mm')}
+                        </div>
+                        <div className="text-gray-600">Sent</div>
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+
+          {/* Messages Tab */}
+          {activeTab === 'messages' && (
+            <div className="space-y-4">
+              {messages.map((message) => (
+                <div 
+                  key={message.id} 
+                  className={`p-4 border rounded-lg hover:shadow-md transition-all cursor-pointer ${
+                    message.status === 'unread' ? 'border-blue-300 bg-blue-50' : 'border-gray-200'
+                  }`}
+                  onClick={() => setSelectedMessage(message)}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-bold">
+                        {message.player_name.split(' ').map(n => n[0]).join('')}
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-gray-900">{message.player_name}</h3>
+                        <p className="text-sm text-gray-600">{message.subject}</p>
+                        <p className="text-sm text-gray-500 mt-1 line-clamp-2">{message.content}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Badge className={getPriorityColor(message.priority)}>
+                        {message.priority}
+                      </Badge>
+                      {message.status === 'unread' && (
+                        <div className="w-3 h-3 bg-blue-600 rounded-full"></div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="mt-3 text-sm text-gray-500">
+                    {format(new Date(message.created_at), 'MMM d, yyyy HH:mm')}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Compose Modal */}
+      {showCompose && (
+        <Card className="glass-card border-none shadow-premium">
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              <span>Compose Announcement</span>
+              <Button variant="ghost" size="sm" onClick={() => setShowCompose(false)}>
+                ×
+              </Button>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium text-gray-700">Title</label>
+                <Input
+                  value={composeData.title}
+                  onChange={(e) => setComposeData({ ...composeData, title: e.target.value })}
+                  placeholder="Announcement title..."
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-700">Type</label>
+                <select
+                  value={composeData.type}
+                  onChange={(e) => setComposeData({ ...composeData, type: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                >
+                  <option value="general">General</option>
+                  <option value="tournament">Tournament</option>
+                  <option value="maintenance">Maintenance</option>
+                  <option value="urgent">Urgent</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-gray-700">Content</label>
+              <Textarea
+                value={composeData.content}
+                onChange={(e) => setComposeData({ ...composeData, content: e.target.value })}
+                placeholder="Write your announcement..."
+                rows={6}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium text-gray-700">Target Audience</label>
+                <select
+                  value={composeData.target}
+                  onChange={(e) => setComposeData({ ...composeData, target: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                >
+                  <option value="all">All Players</option>
+                  <option value="active">Active Players</option>
+                  <option value="tournament">Tournament Participants</option>
+                  <option value="specific">Specific Players</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-700">Schedule (Optional)</label>
+                <Input
+                  type="datetime-local"
+                  value={composeData.scheduledAt}
+                  onChange={(e) => setComposeData({ ...composeData, scheduledAt: e.target.value })}
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <Button
+                onClick={handleSendAnnouncement}
+                className="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 text-white"
+              >
+                <Send className="h-4 w-4 mr-2" />
+                Send Announcement
+              </Button>
+              <Button variant="outline" onClick={() => setShowCompose(false)}>
+                Cancel
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Message Detail Modal */}
+      {selectedMessage && (
+        <Card className="glass-card border-none shadow-premium">
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              <span>Message from {selectedMessage.player_name}</span>
+              <Button variant="ghost" size="sm" onClick={() => setSelectedMessage(null)}>
+                ×
+              </Button>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="p-4 bg-gray-50 rounded-lg">
+              <h4 className="font-bold text-gray-900 mb-2">{selectedMessage.subject}</h4>
+              <p className="text-gray-700">{selectedMessage.content}</p>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-gray-700">Reply</label>
+              <Textarea
+                placeholder="Type your reply..."
+                rows={4}
+              />
+            </div>
+
+            <div className="flex gap-3">
+              <Button className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white">
+                <Send className="h-4 w-4 mr-2" />
+                Send Reply
+              </Button>
+              <Button variant="outline">
+                <Phone className="h-4 w-4 mr-2" />
+                Call Player
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  )
+}
+

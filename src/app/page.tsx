@@ -11,20 +11,21 @@ export default function LandingPage() {
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-950">
       {/* Navbar - Premium Glassmorphism - Mobile Optimized */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/10 backdrop-blur-xl border-b border-white/20 shadow-2xl">
-        <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
-          <div className="flex items-center justify-between">
+        <div className="container mx-auto px-4 sm:px-6 h-14 sm:h-16">
+          <div className="flex items-center justify-between h-full">
             <motion.div 
-              className="flex items-center gap-2 sm:gap-3"
+              className="flex items-center h-full"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl flex items-center justify-center shadow-xl hover:shadow-yellow-500/50 transition-all duration-300 hover:scale-105" style={{ backgroundColor: '#FFFF00' }}>
-                <Gamepad2 className="w-5 h-5 sm:w-6 sm:h-6 text-gray-900" />
-              </div>
-              <span className="text-lg sm:text-2xl font-bold text-white tracking-tight">
-                MATCHFY
-              </span>
+              <Image
+                src="/images/GOALDEN LOGO/GOALDEN_logo.png"
+                alt="GOALDEN Logo"
+                width={120}
+                height={120}
+                className="hover:scale-105 transition-all duration-300"
+              />
             </motion.div>
             <motion.div 
               className="flex items-center gap-2 sm:gap-4 md:gap-6"
@@ -183,7 +184,7 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">Why Choose MATCHFY?</h2>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">Why Choose GOALDEN?</h2>
             <p className="text-xl text-gray-300 max-w-2xl mx-auto">
               The most advanced eFootball tournament platform with automated bracket management
             </p>
@@ -322,7 +323,7 @@ export default function LandingPage() {
           >
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Experience the Platform</h2>
             <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-              See how MATCHFY revolutionizes eFootball tournaments
+              See how GOALDEN revolutionizes eFootball tournaments
             </p>
           </motion.div>
 
@@ -364,7 +365,7 @@ export default function LandingPage() {
                 Built for <span style={{ color: '#FFFF00' }}>Serious</span> Players
               </h2>
               <p className="text-xl text-gray-300 mb-8">
-                MATCHFY provides a professional tournament experience with automated systems and fair play guarantees.
+                GOALDEN provides a professional tournament experience with automated systems and fair play guarantees.
               </p>
 
               <div className="space-y-4">
@@ -426,7 +427,7 @@ export default function LandingPage() {
               Ready to Start Winning?
             </h2>
             <p className="text-xl text-gray-300 mb-10">
-              Join thousands of players competing in MATCHFY tournaments. Sign up now and dominate the competition.
+              Join thousands of players competing in GOALDEN tournaments. Sign up now and dominate the competition.
             </p>
             <Link
               href="/sign-up"
@@ -449,7 +450,7 @@ export default function LandingPage() {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <h3 className="text-2xl font-bold mb-4" style={{ color: '#FFFF00' }}>
-                MATCHFY
+                GOALDEN
               </h3>
               <p className="text-gray-300">
                 The ultimate eFootball tournament platform for competitive players.
@@ -480,7 +481,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="border-t border-white/10 mt-12 pt-8 text-center text-gray-300">
-            <p>&copy; 2025 MATCHFY. All rights reserved.</p>
+            <p>&copy; 2025 GOALDEN. All rights reserved.</p>
           </div>
         </div>
       </footer>

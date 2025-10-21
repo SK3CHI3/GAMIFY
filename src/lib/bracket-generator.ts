@@ -8,8 +8,7 @@ interface BracketResult {
 }
 
 export function generateSingleEliminationBracket(
-  players: string[],
-  tournamentId: string
+  players: string[]
 ): BracketResult {
   const playerCount = players.length
   const totalRounds = Math.ceil(Math.log2(playerCount))
@@ -17,7 +16,6 @@ export function generateSingleEliminationBracket(
 
   // Calculate total matches needed for perfect bracket
   const perfectBracketSize = Math.pow(2, totalRounds)
-  const byesNeeded = perfectBracketSize - playerCount
 
   // First round setup
   let matchNumber = 1
@@ -78,7 +76,7 @@ export function generateDoubleEliminationBracket(
   const matches: Match[] = []
 
   // Winner bracket (same as single elimination)
-  const winnerBracket = generateSingleEliminationBracket(players, tournamentId)
+  const winnerBracket = generateSingleEliminationBracket(players)
   matches.push(...winnerBracket.matches)
 
   // Loser bracket setup

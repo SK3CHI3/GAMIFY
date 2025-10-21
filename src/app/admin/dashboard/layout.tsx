@@ -1,6 +1,5 @@
 import { redirect } from 'next/navigation'
 import { getCurrentUser } from '@/app/actions/auth'
-import { AdminSidebar } from '@/components/admin/admin-sidebar'
 
 export default async function AdminLayout({
   children,
@@ -23,14 +22,7 @@ export default async function AdminLayout({
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-blue-300/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
       </div>
 
-      <div className="flex relative">
-        <AdminSidebar />
-        <main className="flex-1 p-8 ml-64">
-          <div className="max-w-7xl mx-auto">
-            {children}
-          </div>
-        </main>
-      </div>
+      {children}
     </div>
   )
 }

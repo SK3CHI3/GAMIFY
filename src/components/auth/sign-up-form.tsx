@@ -8,7 +8,7 @@ import { signUp } from '@/app/actions/auth'
 import { Loader2, Check, X, Eye, EyeOff } from 'lucide-react'
 import Link from 'next/link'
 
-export function SignUpForm({ onToggle }: { onToggle: () => void }) {
+export function SignUpForm() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [password, setPassword] = useState('')
@@ -89,7 +89,7 @@ export function SignUpForm({ onToggle }: { onToggle: () => void }) {
     <div className="space-y-6">
       <div className="space-y-2">
         <h2 className="text-3xl font-bold text-gray-900">
-          Join MATCHFY
+          Join GOALDEN
         </h2>
         <p className="text-gray-600">Create your account to start competing</p>
       </div>

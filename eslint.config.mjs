@@ -22,12 +22,22 @@ const eslintConfig = [
   },
   {
     rules: {
+      // TypeScript rules
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/no-unused-vars": "warn",
+      
+      // Next.js rules
       "@next/next/no-img-element": "warn",
       "@next/next/no-html-link-for-pages": "warn",
+      
+      // React rules
       "react-hooks/exhaustive-deps": "warn",
       "react/no-unescaped-entities": "warn",
+      "react/jsx-no-undef": "warn",
+      
+      // General rules
+      "no-console": "warn",
+      "prefer-const": "warn",
     },
   },
 ];

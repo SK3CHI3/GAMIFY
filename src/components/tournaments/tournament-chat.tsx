@@ -24,7 +24,7 @@ interface TournamentChatProps {
   currentUserName: string
 }
 
-export function TournamentChat({ tournamentId, currentUserId, currentUserName }: TournamentChatProps) {
+export function TournamentChat({ tournamentId, currentUserId }: TournamentChatProps) {
   const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState('')
   const [loading, setLoading] = useState(false)
@@ -46,7 +46,7 @@ export function TournamentChat({ tournamentId, currentUserId, currentUserName }:
           table: 'chat_messages',
           filter: `tournament_id=eq.${tournamentId}`,
         },
-        (payload) => {
+        () => {
           // Fetch the complete message with profile data
           fetchMessages()
         }

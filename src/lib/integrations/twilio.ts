@@ -24,11 +24,6 @@ interface WhatsAppMessage {
   message: string
 }
 
-interface WhatsAppTemplateMessage {
-  to: string
-  templateName: string
-  parameters: Record<string, string>
-}
 
 /**
  * Send a basic WhatsApp message
@@ -94,7 +89,7 @@ export async function notifyTournamentRegistration(
 ) {
   return await sendWhatsAppMessage({
     to: phoneNumber,
-    message: `🎮 *MATCHFY Tournament*\n\nYou've successfully registered for *${tournamentName}*!\n\n💰 Entry Fee: KES ${entryFee}\n\nYou'll receive a notification when the tournament starts. Good luck! 🏆`,
+    message: `🎮 *GOALDEN Tournament*\n\nYou've successfully registered for *${tournamentName}*!\n\n💰 Entry Fee: KES ${entryFee}\n\nYou'll receive a notification when the tournament starts. Good luck! 🏆`,
   })
 }
 
@@ -157,7 +152,7 @@ export async function notifyPrizePayment(
 ) {
   return await sendWhatsAppMessage({
     to: phoneNumber,
-    message: `💸 *Prize Payment*\n\nKES ${amount} has been sent to ${phoneNumber}\n\nTournament: ${tournamentName}\n\nThank you for playing MATCHFY! 🎮`,
+    message: `💸 *Prize Payment*\n\nKES ${amount} has been sent to ${phoneNumber}\n\nTournament: ${tournamentName}\n\nThank you for playing GOALDEN! 🎮`,
   })
 }
 
