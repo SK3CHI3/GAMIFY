@@ -7,6 +7,9 @@ import { createClient } from '@/lib/supabase/server'
 export async function signUp(formData: FormData) {
   const supabase = await createClient()
 
+  // Get the site URL from environment or use the current origin
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+
   const data = {
     email: formData.get('email') as string,
     password: formData.get('password') as string,
@@ -16,6 +19,7 @@ export async function signUp(formData: FormData) {
         phone: formData.get('phone') as string,
         role: 'player',
       },
+      emailRedirectTo: `${siteUrl}/auth/callback`,
     },
   }
 
@@ -25,8 +29,9 @@ export async function signUp(formData: FormData) {
     return { error: error.message }
   }
 
+  // Don't redirect - let the form show success message
   revalidatePath('/', 'layout')
-  redirect('/dashboard')
+  return { success: true }
 }
 
 export async function signIn(formData: FormData) {

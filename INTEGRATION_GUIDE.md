@@ -934,3 +934,315 @@ For MATCHFY specific questions:
 
 
 
+
+Add to `.env.local`:
+
+```env
+
+TWILIO_ACCOUNT_SID=your_account_sid
+
+TWILIO_AUTH_TOKEN=your_auth_token
+
+TWILIO_WHATSAPP_NUMBER=whatsapp:+14155238886
+
+```
+
+
+
+### Step 4: Integrate into Actions
+
+
+
+Update `src/app/actions/tournaments.ts`:
+
+
+
+```typescript
+
+import { notifyTournamentRegistration } from '@/lib/integrations/twilio'
+
+
+
+export async function registerForTournament(tournamentId: string) {
+
+  // ... registration logic
+
+  
+
+  // Send WhatsApp notification
+
+  await notifyTournamentRegistration(
+
+    user.phone,
+
+    tournament.name,
+
+    tournament.entry_fee
+
+  )
+
+  
+
+  return { success: true }
+
+}
+
+```
+
+
+
+Update `src/app/actions/matches.ts`:
+
+
+
+```typescript
+
+import { 
+
+  notifyMatchAssignment,
+
+  notifyMatchResult,
+
+  notifyDispute 
+
+} from '@/lib/integrations/twilio'
+
+
+
+async function advanceToNextRound(matchId: string, winnerId: string, format: string) {
+
+  // ... existing logic
+
+  
+
+  // Notify both players about next match
+
+  if (nextMatch?.player1_id && nextMatch?.player2_id) {
+
+    const { data: player1 } = await supabase
+
+      .from('profiles')
+
+      .select('phone, full_name')
+
+      .eq('id', nextMatch.player1_id)
+
+      .single()
+
+      
+
+    const { data: player2 } = await supabase
+
+      .from('profiles')
+
+      .select('phone, full_name')
+
+      .eq('id', nextMatch.player2_id)
+
+      .single()
+
+    
+
+    if (player1 && player2) {
+
+      await notifyMatchAssignment(player1.phone, player2.full_name, tournament.name)
+
+      await notifyMatchAssignment(player2.phone, player1.full_name, tournament.name)
+
+    }
+
+  }
+
+}
+
+```
+
+
+
+### Step 5: Set Up Notification Triggers
+
+
+
+Create `src/lib/notification-scheduler.ts`:
+
+
+
+```typescript
+
+import { createClient } from '@/lib/supabase/server'
+
+import { notifyMatchAssignment } from './integrations/twilio'
+
+
+
+export async function scheduleMatchNotifications() {
+
+  const supabase = await createClient()
+
+  
+
+  // Get all ongoing matches that started in last 5 minutes
+
+  const { data: recentMatches } = await supabase
+
+    .from('matches')
+
+    .select('*, player1:player1_id(*), player2:player2_id(*), tournament:tournaments(*)')
+
+    .eq('status', 'ongoing')
+
+    .gte('created_at', new Date(Date.now() - 5 * 60 * 1000).toISOString())
+
+  
+
+  for (const match of recentMatches || []) {
+
+    await notifyMatchAssignment(
+
+      match.player1.phone,
+
+      match.player2.full_name,
+
+      match.tournament.name
+
+    )
+
+    
+
+    await notifyMatchAssignment(
+
+      match.player2.phone,
+
+      match.player1.full_name,
+
+      match.tournament.name
+
+    )
+
+  }
+
+}
+
+```
+
+
+
+### Testing WhatsApp
+
+
+
+1. **Sandbox Testing:**
+
+   - Join sandbox by sending "join <sandbox-code>" to Twilio sandbox number
+
+   - Test with your own phone number
+
+   - Messages will show "sent via sandbox"
+
+
+
+2. **Production:**
+
+   - Submit WhatsApp Business Profile for approval
+
+   - Get approved message templates
+
+   - Use approved phone number
+
+
+
+---
+
+
+
+## Testing
+
+
+
+### Local Testing
+
+
+
+1. Use ngrok to expose local server:
+
+```bash
+
+ngrok http 3000
+
+```
+
+
+
+2. Update M-PESA callback URL to ngrok URL:
+
+```
+
+https://your-ngrok-url.ngrok.io/api/mpesa/callback
+
+```
+
+
+
+3. Test payment flow:
+
+   - Register for tournament
+
+   - Check M-PESA prompt on phone
+
+   - Verify callback received
+
+   - Confirm registration updated
+
+
+
+### Production Checklist
+
+
+
+- [ ] Switch from sandbox to production M-PESA
+
+- [ ] Update callback URLs to production domain
+
+- [ ] Get WhatsApp Business approval
+
+- [ ] Set up monitoring for failed payments
+
+- [ ] Configure retry logic for notifications
+
+- [ ] Add payment reconciliation system
+
+- [ ] Set up admin alerts for payment issues
+
+- [ ] Test payout flow thoroughly
+
+- [ ] Verify all notification triggers
+
+- [ ] Monitor API rate limits
+
+
+
+---
+
+
+
+## Support
+
+
+
+For integration issues:
+
+- M-PESA: support@safaricom.co.ke
+
+- Twilio: https://www.twilio.com/help
+
+
+
+For MATCHFY specific questions:
+
+- GitHub Issues
+
+- support@matchfy.com
+
+
+
+

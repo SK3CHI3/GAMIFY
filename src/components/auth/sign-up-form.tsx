@@ -5,12 +5,14 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { signUp } from '@/app/actions/auth'
-import { Loader2, Check, X, Eye, EyeOff } from 'lucide-react'
+import { Loader2, Check, X, Eye, EyeOff, Mail, CheckCircle } from 'lucide-react'
 import Link from 'next/link'
 
 export function SignUpForm() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState(false)
+  const [userEmail, setUserEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [passwordStrength, setPasswordStrength] = useState<'weak' | 'medium' | 'strong' | null>(null)
@@ -63,10 +65,17 @@ export function SignUpForm() {
     setError('')
 
     const formData = new FormData(e.currentTarget)
+    const email = formData.get('email') as string
+    setUserEmail(email)
+    
     const result = await signUp(formData)
 
     if (result?.error) {
       setError(result.error)
+      setLoading(false)
+    } else {
+      // Show success message instead of redirecting
+      setSuccess(true)
       setLoading(false)
     }
   }
@@ -83,6 +92,69 @@ export function SignUpForm() {
     if (passwordStrength === 'weak') return 'w-1/3'
     if (passwordStrength === 'medium') return 'w-2/3'
     return 'w-full'
+  }
+
+  // Show success message if signup was successful
+  if (success) {
+    return (
+      <div className="space-y-6">
+        <div className="text-center space-y-6">
+          <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+            <CheckCircle className="w-10 h-10 text-white" />
+          </div>
+          
+          <div className="space-y-2">
+            <h2 className="text-3xl font-bold text-gray-900">
+              Check Your Email! 📧
+            </h2>
+            <p className="text-gray-600 text-lg">
+              We've sent a confirmation link to
+            </p>
+            <p className="text-blue-600 font-semibold text-lg">
+              {userEmail}
+            </p>
+          </div>
+
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-200 rounded-xl p-6 space-y-4">
+            <div className="flex items-start gap-3 text-left">
+              <Mail className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+              <div className="space-y-2">
+                <p className="text-sm text-gray-700 font-medium">
+                  <strong>Next Steps:</strong>
+                </p>
+                <ol className="text-sm text-gray-600 space-y-2 list-decimal list-inside">
+                  <li>Open your email inbox</li>
+                  <li>Look for an email from GOALDEN</li>
+                  <li>Click the confirmation link</li>
+                  <li>Start competing and winning! 🏆</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-4">
+            <p className="text-sm text-yellow-800">
+              <strong>⚠️ Didn't receive the email?</strong> Check your spam folder or{' '}
+              <button 
+                onClick={() => setSuccess(false)}
+                className="text-blue-600 hover:text-blue-700 font-semibold underline"
+              >
+                try signing up again
+              </button>
+            </p>
+          </div>
+
+          <Link href="/sign-in">
+            <Button 
+              variant="outline" 
+              className="w-full h-12 border-2 border-gray-300 hover:bg-gray-50"
+            >
+              Back to Sign In
+            </Button>
+          </Link>
+        </div>
+      </div>
+    )
   }
 
   return (
