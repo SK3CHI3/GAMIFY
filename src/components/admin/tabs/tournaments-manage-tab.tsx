@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Trophy, Users, DollarSign, Calendar, Loader2, Play, Pause, CheckCircle } from 'lucide-react'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Trophy, Users, DollarSign, Calendar, Play, Pause, CheckCircle } from 'lucide-react'
 import { format } from 'date-fns'
 
 export function TournamentsManageTab() {
@@ -39,8 +40,41 @@ export function TournamentsManageTab() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
+      <div className="container mx-auto px-4 py-6 space-y-6 max-w-7xl">
+        {/* Header Skeleton */}
+        <div className="backdrop-blur-xl bg-white/80 border border-white/40 rounded-2xl p-6 shadow-lg">
+          <div className="flex items-center gap-3">
+            <Skeleton className="w-12 h-12 rounded-xl" />
+            <div>
+              <Skeleton className="h-7 w-56 mb-2" />
+              <Skeleton className="h-4 w-72" />
+            </div>
+          </div>
+        </div>
+
+        {/* Tournaments List Skeleton */}
+        <div className="grid gap-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="backdrop-blur-xl bg-white/80 border border-white/40 rounded-2xl p-6 shadow-lg">
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex-1">
+                  <Skeleton className="h-6 w-64 mb-2" />
+                  <Skeleton className="h-4 w-96 mb-3" />
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <Skeleton className="h-6 w-24" />
+                    <Skeleton className="h-6 w-32" />
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {[1, 2, 3, 4].map((j) => (
+                      <Skeleton key={j} className="h-5 w-32" />
+                    ))}
+                  </div>
+                </div>
+                <Skeleton className="w-20 h-9" />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     )
   }
@@ -149,10 +183,16 @@ export function TournamentsManageTab() {
             </div>
           ))
         ) : (
-          <div className="backdrop-blur-xl bg-white/80 border border-white/40 rounded-2xl p-12 text-center shadow-lg">
-            <Trophy className="w-16 h-16 mx-auto mb-4 text-gray-400" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No Tournaments Yet</h3>
-            <p className="text-gray-600">Create your first tournament to get started!</p>
+          <div className="flex items-center justify-center min-h-[50vh]">
+            <div className="text-center space-y-4">
+              <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto">
+                <Trophy className="w-8 h-8 text-gray-400" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-1">No Tournaments Yet</h3>
+                <p className="text-gray-600">Create your first tournament to get started!</p>
+              </div>
+            </div>
           </div>
         )}
       </div>

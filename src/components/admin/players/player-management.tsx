@@ -26,6 +26,7 @@ import {
   DropdownMenuTrigger 
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Skeleton } from '@/components/ui/skeleton'
 import { format } from 'date-fns'
 
 interface Player {
@@ -60,42 +61,52 @@ export function PlayerManagement() {
       try {
         const { data: playersData, error } = await supabase
           .from('profiles')
-          .select(`
-            *,
-            player_stats (
-              tournaments_played,
-              tournaments_won,
-              total_earnings,
-              last_active
-            )
-          `)
+          .select('*')
           .order('created_at', { ascending: false })
 
         if (error) throw error
 
-        // Calculate additional stats
+        // Calculate stats for each player
         const playersWithStats = await Promise.all(
           (playersData || []).map(async (player) => {
-            // Get dispute count
-            const { count: disputeCount } = await supabase
-              .from('disputes')
+            // Get tournament count (registrations)
+            const { count: tournamentsPlayed } = await supabase
+              .from('registrations')
               .select('*', { count: 'exact', head: true })
-              .or(`player1_id.eq.${player.id},player2_id.eq.${player.id}`)
+              .eq('player_id', player.id)
 
-            const stats = player.player_stats?.[0]
-            const tournamentsPlayed = stats?.tournaments_played || 0
-            const tournamentsWon = stats?.tournaments_won || 0
-            const winRate = tournamentsPlayed > 0 ? Math.round((tournamentsWon / tournamentsPlayed) * 100) : 0
+            // Get dispute count
+            const { data: disputesData } = await supabase
+              .from('disputes')
+              .select('match_id')
+              .limit(100)
+
+            let disputeCount = 0
+            if (disputesData) {
+              const { data: matchesData } = await supabase
+                .from('matches')
+                .select('id, player1_id, player2_id')
+                .in('id', disputesData.map(d => d.match_id))
+
+              disputeCount = matchesData?.filter(
+                m => m.player1_id === player.id || m.player2_id === player.id
+              ).length || 0
+            }
+
+            // Mock stats for now (can be replaced with actual calculations)
+            const tournamentsWon = 0
+            const totalEarnings = 0
+            const winRate = tournamentsPlayed ? Math.round((tournamentsWon / (tournamentsPlayed || 1)) * 100) : 0
 
             return {
               ...player,
               stats: {
-                tournaments_played: tournamentsPlayed,
+                tournaments_played: tournamentsPlayed || 0,
                 tournaments_won: tournamentsWon,
-                total_earnings: stats?.total_earnings || 0,
+                total_earnings: totalEarnings,
                 win_rate: winRate,
-                dispute_count: disputeCount || 0,
-                last_active: stats?.last_active || player.updated_at
+                dispute_count: disputeCount,
+                last_active: player.updated_at
               }
             }
           })
@@ -153,8 +164,65 @@ export function PlayerManagement() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600"></div>
+      <div className="space-y-6">
+        {/* Header Skeleton */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <Skeleton className="h-8 w-64 mb-2" />
+            <Skeleton className="h-4 w-96" />
+          </div>
+          <Skeleton className="h-8 w-32" />
+        </div>
+
+        {/* Filters Skeleton */}
+        <Card className="glass-card border-none shadow-premium">
+          <CardContent className="p-6">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Skeleton className="flex-1 h-10" />
+              <Skeleton className="w-32 h-10" />
+              <Skeleton className="w-32 h-10" />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Players Grid Skeleton */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <Card key={i} className="glass-card border-none shadow-premium">
+              <CardHeader className="pb-4">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-3">
+                    <Skeleton className="h-12 w-12 rounded-full" />
+                    <div>
+                      <Skeleton className="h-5 w-32 mb-2" />
+                      <Skeleton className="h-3 w-40" />
+                    </div>
+                  </div>
+                  <Skeleton className="h-8 w-8" />
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <Skeleton className="h-5 w-20" />
+                  <Skeleton className="h-6 w-16" />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  {[1, 2, 3, 4].map((j) => (
+                    <Skeleton key={j} className="h-20 rounded-lg" />
+                  ))}
+                </div>
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-full" />
+                </div>
+                <div className="flex gap-2">
+                  <Skeleton className="flex-1 h-9" />
+                  <Skeleton className="flex-1 h-9" />
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     )
   }

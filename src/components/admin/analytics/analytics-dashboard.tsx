@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
 import { 
   TrendingUp, 
   Users, 
@@ -193,16 +194,62 @@ export function AnalyticsDashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600"></div>
+      <div className="space-y-8">
+        {/* Key Metrics Cards Skeleton */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[1, 2, 3, 4].map((i) => (
+            <Card key={i} className="glass-card border-none shadow-premium">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-4 w-4" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-8 w-32 mb-2" />
+                <Skeleton className="h-4 w-40" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Charts Section Skeleton */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {[1, 2].map((i) => (
+            <Card key={i} className="glass-card border-none shadow-premium">
+              <CardHeader>
+                <Skeleton className="h-6 w-40" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-80 w-full" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Player Activity Skeleton */}
+        <Card className="glass-card border-none shadow-premium">
+          <CardHeader>
+            <Skeleton className="h-6 w-48" />
+          </CardHeader>
+          <CardContent>
+            <Skeleton className="h-80 w-full" />
+          </CardContent>
+        </Card>
       </div>
     )
   }
 
   if (!analytics) {
     return (
-      <div className="text-center py-12">
-        <p className="text-gray-600">Failed to load analytics data</p>
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <div className="text-center space-y-4">
+          <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto">
+            <BarChart3 className="w-8 h-8 text-gray-400" />
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-1">No Analytics Data</h3>
+            <p className="text-gray-600">Failed to load analytics data. Please try again.</p>
+          </div>
+        </div>
       </div>
     )
   }
