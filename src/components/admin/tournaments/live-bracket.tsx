@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { 
   Trophy, 
   Users, 
@@ -77,24 +78,61 @@ export function LiveBracket({ tournamentId }: { tournamentId: string }) {
         // Load tournament data
         const { data: tournamentData, error: tournamentError } = await supabase
           .from('tournaments')
-          .select(`
-            *,
-            matches (
-              *,
-              player1:player1_id(full_name),
-              player2:player2_id(full_name)
-            )
-          `)
+          .select('*')
           .eq('id', tournamentId)
           .single()
 
-        if (tournamentError) throw tournamentError
+        if (tournamentError) {
+          console.error('Tournament error:', tournamentError)
+          throw tournamentError
+        }
 
-        setTournament(tournamentData)
+        // Load matches separately
+        const { data: matchesData, error: matchesError } = await supabase
+          .from('matches')
+          .select('*')
+          .eq('tournament_id', tournamentId)
+          .order('round', { ascending: true })
+          .order('position', { ascending: true })
+
+        if (matchesError) {
+          console.error('Matches error:', matchesError)
+        }
+
+        // Load player names for matches
+        const matches = matchesData || []
+        const enrichedMatches = await Promise.all(
+          matches.map(async (match) => {
+            const { data: player1 } = await supabase
+              .from('profiles')
+              .select('full_name')
+              .eq('id', match.player1_id)
+              .single()
+
+            const { data: player2 } = await supabase
+              .from('profiles')
+              .select('full_name')
+              .eq('id', match.player2_id)
+              .single()
+
+            return {
+              ...match,
+              player1_name: player1?.full_name || 'Player 1',
+              player2_name: player2?.full_name || 'Player 2',
+            }
+          })
+        )
+
+        setTournament({
+          ...tournamentData,
+          matches: enrichedMatches,
+        })
 
         // Generate bracket structure
         if (tournamentData.bracket_data) {
-          generateBracketStructure(tournamentData.bracket_data, tournamentData.matches || [])
+          generateBracketStructure(tournamentData.bracket_data, enrichedMatches)
+        } else if (enrichedMatches.length > 0) {
+          generateBracketStructure({}, enrichedMatches)
         }
 
       } catch (error) {
@@ -158,16 +196,70 @@ export function LiveBracket({ tournamentId }: { tournamentId: string }) {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600"></div>
+      <div className="space-y-6">
+        {/* Tournament Header Skeleton */}
+        <Card className="glass-card border-none shadow-premium">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <Skeleton className="h-8 w-64 mb-2" />
+                <Skeleton className="h-4 w-96" />
+              </div>
+              <div className="flex items-center gap-3">
+                <Skeleton className="h-8 w-24" />
+                <Skeleton className="h-9 w-28" />
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="text-center p-3 bg-gray-50 rounded-lg">
+                  <Skeleton className="h-6 w-6 mx-auto mb-2" />
+                  <Skeleton className="h-8 w-20 mx-auto mb-1" />
+                  <Skeleton className="h-4 w-16 mx-auto" />
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Bracket Skeleton */}
+        <Card className="glass-card border-none shadow-premium">
+          <CardHeader>
+            <Skeleton className="h-6 w-48" />
+          </CardHeader>
+          <CardContent>
+            <div className="flex gap-8">
+              {[1, 2, 3].map((round) => (
+                <div key={round} className="flex flex-col gap-4 min-w-[200px]">
+                  <Skeleton className="h-6 w-32 mx-auto" />
+                  <div className="space-y-4">
+                    {[1, 2].map((match) => (
+                      <Skeleton key={match} className="h-32 w-full rounded-lg" />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       </div>
     )
   }
 
   if (!tournament) {
     return (
-      <div className="text-center py-12">
-        <p className="text-gray-600">Tournament not found</p>
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <div className="text-center space-y-4">
+          <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto">
+            <Trophy className="w-8 h-8 text-gray-400" />
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-1">Tournament Not Found</h3>
+            <p className="text-gray-600">This tournament doesn't exist or has been deleted.</p>
+          </div>
+        </div>
       </div>
     )
   }

@@ -5,7 +5,8 @@ import { createClient } from '@/lib/supabase/client'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
-import { AlertCircle, Loader2, X } from 'lucide-react'
+import { Skeleton } from '@/components/ui/skeleton'
+import { AlertCircle, X } from 'lucide-react'
 
 export function DisputesManageTab() {
   const [loading, setLoading] = useState(true)
@@ -38,8 +39,16 @@ export function DisputesManageTab() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <Skeleton className="h-8 w-48" />
+          <Skeleton className="h-10 w-32" />
+        </div>
+        <div className="grid gap-4">
+          {[1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-32 w-full" />
+          ))}
+        </div>
       </div>
     )
   }
