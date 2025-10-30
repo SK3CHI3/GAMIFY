@@ -44,7 +44,7 @@ interface AnalyticsData {
     disputed: number
     disputeRate: number
   }
-  monthlyRevenue: Array<{ month: string; revenue: number; tournaments: number }>
+  monthlyRevenue: Array<{ period: string; revenue: number; tournaments: number; signups?: number }>
   tournamentFormats: Array<{ format: string; count: number; percentage: number; signups: number }>
   playerActivity: Array<{ day: string; active: number; matches: number }>
 }
@@ -143,7 +143,7 @@ export function AnalyticsDashboard() {
         for (let i = dataPoints - 1; i >= 0; i--) {
           const date = new Date()
           if (isMonthly) {
-            date.setMonth(date.getMonth() - i)
+          date.setMonth(date.getMonth() - i)
           } else {
             date.setDate(date.getDate() - i)
           }
@@ -155,7 +155,7 @@ export function AnalyticsDashboard() {
           const periodTournaments = filteredTournaments.filter(t => {
             const created = new Date(t.created_at || '')
             if (isMonthly) {
-              return created.getMonth() === date.getMonth() && created.getFullYear() === date.getFullYear()
+            return created.getMonth() === date.getMonth() && created.getFullYear() === date.getFullYear()
             } else {
               return created.toDateString() === date.toDateString()
             }
@@ -196,12 +196,15 @@ export function AnalyticsDashboard() {
         })
 
         const totalTournaments = tournaments.length
-        const tournamentFormats = Object.entries(formatStats).map(([format, data]) => ({
-          format: format.replace('_', ' ').toUpperCase(),
-          count: data.count,
-          signups: data.signups,
-          percentage: Math.round((data.count / totalTournaments) * 100)
-        }))
+        const tournamentFormats = Object.entries(formatStats).map(([format, data]) => {
+          const stats = data as { count: number; signups: number }
+          return {
+            format: format.replace('_', ' ').toUpperCase(),
+            count: stats.count,
+            signups: stats.signups,
+            percentage: Math.round((stats.count / totalTournaments) * 100)
+          }
+        })
 
         // Player activity with real data (last 14 days)
         const activityData = []
@@ -501,7 +504,7 @@ export function AnalyticsDashboard() {
                   />
                   <Area 
                     type="monotone" 
-                    dataKey="count" 
+                    dataKey="count"
                     stroke={COLORS.info}
                     fill={COLORS.info}
                     fillOpacity={0.1}
