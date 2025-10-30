@@ -133,7 +133,7 @@ export function FinancialDashboard() {
           { method: 'Card', count: 20, percentage: 10, amount: 6000 }
         ]
 
-        // Top earners
+        // Top earners - limit to 3
         const topEarners = profiles
           .map(p => {
             const playerTournaments = registrations.filter(r => r.user_id === p.id)
@@ -148,15 +148,13 @@ export function FinancialDashboard() {
             }
           })
           .sort((a, b) => b.earnings - a.earnings)
-          .slice(0, 5)
+          .slice(0, 3)
 
-        // Recent transactions (mock data)
+        // Recent transactions - limit to 3
         const recentTransactions = [
           { id: '1', type: 'Entry Fee', amount: 500, status: 'completed', date: new Date().toISOString(), player: 'John Doe' },
           { id: '2', type: 'Prize Payout', amount: 1500, status: 'pending', date: new Date(Date.now() - 86400000).toISOString(), player: 'Jane Smith' },
-          { id: '3', type: 'Entry Fee', amount: 300, status: 'completed', date: new Date(Date.now() - 172800000).toISOString(), player: 'Mike Johnson' },
-          { id: '4', type: 'Prize Payout', amount: 800, status: 'completed', date: new Date(Date.now() - 259200000).toISOString(), player: 'Sarah Wilson' },
-          { id: '5', type: 'Entry Fee', amount: 200, status: 'failed', date: new Date(Date.now() - 345600000).toISOString(), player: 'Alex Brown' }
+          { id: '3', type: 'Entry Fee', amount: 300, status: 'completed', date: new Date(Date.now() - 172800000).toISOString(), player: 'Mike Johnson' }
         ]
 
         setFinancial({

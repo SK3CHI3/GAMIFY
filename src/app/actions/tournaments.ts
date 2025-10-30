@@ -12,6 +12,7 @@ export async function createTournament(data: {
   format: string
   mode: string
   start_date?: string
+  poster_url?: string
 }) {
   const supabase = await createClient()
   const user = await getCurrentUser()
@@ -36,6 +37,7 @@ export async function createTournament(data: {
       max_slots: maxSlots,
       created_by: user.id,
       start_date: data.start_date || null,
+      poster_url: data.poster_url || null,
       status: 'registration',
     })
     .select()

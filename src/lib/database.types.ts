@@ -338,6 +338,7 @@ export type Database = {
           max_slots: number
           mode: string
           name: string
+          poster_url: string | null
           prize_pool: number | null
           start_date: string | null
           status: string
@@ -356,6 +357,7 @@ export type Database = {
           max_slots: number
           mode: string
           name: string
+          poster_url?: string | null
           prize_pool?: number | null
           start_date?: string | null
           status?: string
@@ -374,6 +376,7 @@ export type Database = {
           max_slots?: number
           mode?: string
           name?: string
+          poster_url?: string | null
           prize_pool?: number | null
           start_date?: string | null
           status?: string

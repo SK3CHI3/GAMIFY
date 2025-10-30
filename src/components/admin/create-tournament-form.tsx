@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -8,13 +8,22 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Card, CardContent } from '@/components/ui/card'
-import { Loader2, Trophy } from 'lucide-react'
+import { Loader2, Trophy, Upload, Image as ImageIcon } from 'lucide-react'
 import { createTournament } from '@/app/actions/tournaments'
+import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
+
+const COLORS = {
+  primary: '#1e3a8a',
+  secondary: '#fbbf24'
+}
 
 export function CreateTournamentForm() {
   const router = useRouter()
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const [loading, setLoading] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const [posterPreview, setPosterPreview] = useState<string | null>(null)
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -23,7 +32,66 @@ export function CreateTournamentForm() {
     format: 'single_elimination',
     mode: 'auto_schedule',
     start_date: '',
+    poster_url: '',
   })
+
+  async function handlePosterUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please select an image file')
+      return
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Image size must be less than 5MB')
+      return
+    }
+
+    setUploading(true)
+
+    try {
+      const supabase = createClient()
+      
+      // Upload to Supabase Storage
+      const fileExt = file.name.split('.').pop()
+      const fileName = `tournaments/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
+      
+      const { error: uploadError } = await supabase.storage
+        .from('tournament-media')
+        .upload(fileName, file)
+
+      if (uploadError) {
+        console.error('Upload error:', uploadError)
+        toast.error('Failed to upload poster')
+        return
+      }
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('tournament-media')
+        .getPublicUrl(fileName)
+
+      setFormData({ ...formData, poster_url: publicUrl })
+      
+      // Create preview
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setPosterPreview(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+
+      toast.success('Poster uploaded successfully!')
+    } catch (error) {
+      console.error('Error uploading poster:', error)
+      toast.error('Failed to upload poster')
+    } finally {
+      setUploading(false)
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -54,8 +122,8 @@ export function CreateTournamentForm() {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Info */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold flex items-center gap-2">
-              <Trophy className="w-5 h-5 text-[#FFB800]" />
+            <h3 className="text-lg font-semibold flex items-center gap-2" style={{ color: COLORS.primary }}>
+              <Trophy className="w-5 h-5" style={{ color: COLORS.secondary }} />
               Tournament Details
             </h3>
 
@@ -68,6 +136,7 @@ export function CreateTournamentForm() {
                 placeholder="Friday Night Showdown"
                 required
                 disabled={loading}
+                className="border-gray-300 focus:border-blue-600 focus:ring-blue-600"
               />
             </div>
 
@@ -80,7 +149,58 @@ export function CreateTournamentForm() {
                 placeholder="Compete for the top prize in this exciting tournament..."
                 rows={4}
                 disabled={loading}
+                className="border-gray-300 focus:border-blue-600 focus:ring-blue-600"
               />
+            </div>
+
+            {/* Poster Upload */}
+            <div className="space-y-2">
+              <Label htmlFor="poster">Tournament Poster (Optional)</Label>
+              <div className="flex items-center gap-4">
+                <input
+                  type="file"
+                  id="poster"
+                  ref={fileInputRef}
+                  accept="image/*"
+                  onChange={handlePosterUpload}
+                  className="hidden"
+                  disabled={uploading || loading}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading || loading}
+                  className="border-gray-300 hover:border-blue-600"
+                >
+                  {uploading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Uploading...
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="mr-2 h-4 w-4" />
+                      Upload Poster
+                    </>
+                  )}
+                </Button>
+                {formData.poster_url && !uploading && (
+                  <span className="text-sm text-green-600 flex items-center gap-1">
+                    <ImageIcon className="h-4 w-4" />
+                    Poster uploaded
+                  </span>
+                )}
+              </div>
+              {posterPreview && (
+                <div className="mt-3">
+                  <img 
+                    src={posterPreview} 
+                    alt="Poster preview" 
+                    className="w-full max-w-md rounded-lg border border-gray-200 shadow-sm"
+                  />
+                </div>
+              )}
             </div>
           </div>
 
@@ -93,7 +213,7 @@ export function CreateTournamentForm() {
                 onValueChange={(value) => setFormData({ ...formData, format: value })}
                 disabled={loading}
               >
-                <SelectTrigger>
+                <SelectTrigger className="border-gray-300 focus:border-blue-600">
                   <SelectValue placeholder="Select format" />
                 </SelectTrigger>
                 <SelectContent>
@@ -115,7 +235,7 @@ export function CreateTournamentForm() {
                 onValueChange={(value) => setFormData({ ...formData, mode: value })}
                 disabled={loading}
               >
-                <SelectTrigger>
+                <SelectTrigger className="border-gray-300 focus:border-blue-600">
                   <SelectValue placeholder="Select mode" />
                 </SelectTrigger>
                 <SelectContent>
@@ -140,7 +260,7 @@ export function CreateTournamentForm() {
                 onValueChange={(value) => setFormData({ ...formData, max_slots: value })}
                 disabled={loading}
               >
-                <SelectTrigger>
+                <SelectTrigger className="border-gray-300 focus:border-blue-600">
                   <SelectValue placeholder="Select slots" />
                 </SelectTrigger>
                 <SelectContent>
@@ -165,6 +285,7 @@ export function CreateTournamentForm() {
                 placeholder="100"
                 required
                 disabled={loading}
+                className="border-gray-300 focus:border-blue-600 focus:ring-blue-600"
               />
             </div>
           </div>
@@ -178,6 +299,7 @@ export function CreateTournamentForm() {
               value={formData.start_date}
               onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
               disabled={loading}
+              className="border-gray-300 focus:border-blue-600 focus:ring-blue-600"
             />
             <p className="text-xs text-gray-600">
               Leave empty to start immediately when slots fill
@@ -185,12 +307,12 @@ export function CreateTournamentForm() {
           </div>
 
           {/* Prize Pool Preview */}
-          <div className="glass p-4 rounded-lg space-y-2">
-            <h4 className="font-semibold">Prize Pool Breakdown</h4>
+          <div className="p-4 rounded-lg space-y-2" style={{ backgroundColor: 'rgba(30, 58, 138, 0.05)', border: '1px solid rgba(30, 58, 138, 0.1)' }}>
+            <h4 className="font-semibold" style={{ color: COLORS.primary }}>Prize Pool Breakdown</h4>
             <div className="space-y-1 text-sm">
               <div className="flex justify-between">
                 <span className="text-gray-600">Total Prize Pool:</span>
-                <span className="font-bold text-[#00FF88]">KES {prizePool.toFixed(2)}</span>
+                <span className="font-bold" style={{ color: '#10b981' }}>KES {prizePool.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">1st Place (60%):</span>
@@ -212,7 +334,7 @@ export function CreateTournamentForm() {
             <Button
               type="button"
               variant="outline"
-              className="flex-1"
+              className="flex-1 border-gray-300 hover:bg-gray-50"
               onClick={() => router.back()}
               disabled={loading}
             >
@@ -220,7 +342,11 @@ export function CreateTournamentForm() {
             </Button>
             <Button
               type="submit"
-              className="flex-1 gradient-primary text-white shadow-glow-green"
+              className="flex-1 text-white shadow-lg"
+              style={{ 
+                backgroundColor: COLORS.primary,
+                backgroundImage: `linear-gradient(to right, ${COLORS.primary}, ${COLORS.secondary})`
+              }}
               disabled={loading}
             >
               {loading ? (
@@ -238,4 +364,3 @@ export function CreateTournamentForm() {
     </Card>
   )
 }
-
