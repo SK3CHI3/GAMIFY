@@ -217,9 +217,16 @@ async function advanceToNextRound(
         .single()
 
       if (updatedMatch?.player1_id && updatedMatch?.player2_id) {
+        // Set match to ongoing with 10 minute deadline
+        const deadlineDate = new Date()
+        deadlineDate.setMinutes(deadlineDate.getMinutes() + 10)
+        
         await supabase
           .from('matches')
-          .update({ status: 'ongoing' })
+          .update({ 
+            status: 'ongoing',
+            deadline: deadlineDate.toISOString()
+          })
           .eq('id', nextMatch.id)
       }
     }

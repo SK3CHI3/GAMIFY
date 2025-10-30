@@ -5,11 +5,16 @@ import { createClient } from '@/lib/supabase/client'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Trophy, Users, DollarSign, Calendar, Play, Pause, CheckCircle } from 'lucide-react'
+import { Trophy, Users, DollarSign, Calendar, Play, Pause, CheckCircle, Loader2 } from 'lucide-react'
 import { format } from 'date-fns'
+import { startTournament } from '@/app/actions/tournaments'
+import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 
 export function TournamentsManageTab() {
+  const router = useRouter()
   const [loading, setLoading] = useState(true)
+  const [startingTournament, setStartingTournament] = useState<string | null>(null)
   const [tournaments, setTournaments] = useState<any[]>([])
 
   useEffect(() => {
@@ -29,8 +34,29 @@ export function TournamentsManageTab() {
   }, [])
 
   const handleStartTournament = async (tournamentId: string) => {
-    // TODO: Implement tournament start logic
-    console.log('Starting tournament:', tournamentId)
+    setStartingTournament(tournamentId)
+    
+    try {
+      const result = await startTournament(tournamentId)
+      
+      if (result.error) {
+        toast.error(result.error)
+      } else {
+        toast.success('Tournament started successfully!')
+        router.refresh()
+        // Reload tournaments
+        const supabase = createClient()
+        const { data } = await supabase
+          .from('tournaments')
+          .select('*')
+          .order('created_at', { ascending: false })
+        setTournaments(data || [])
+      }
+    } catch (error) {
+      toast.error('Failed to start tournament')
+    } finally {
+      setStartingTournament(null)
+    }
   }
 
   const handlePauseTournament = async (tournamentId: string) => {
@@ -155,9 +181,14 @@ export function TournamentsManageTab() {
                     <Button
                       size="sm"
                       onClick={() => handleStartTournament(tournament.id)}
+                      disabled={startingTournament === tournament.id}
                       className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:shadow-lg hover:shadow-emerald-500/30"
                     >
-                      <Play className="w-4 h-4 mr-1" />
+                      {startingTournament === tournament.id ? (
+                        <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                      ) : (
+                        <Play className="w-4 h-4 mr-1" />
+                      )}
                       Start
                     </Button>
                   )}

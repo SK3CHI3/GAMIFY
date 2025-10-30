@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUser } from './auth'
+import { generateSingleEliminationBracket, generateDoubleEliminationBracket } from '@/lib/bracket-generator'
 
 export async function createTournament(data: {
   name: string
@@ -64,7 +65,7 @@ export async function registerForTournament(tournamentId: string) {
   // Check if tournament exists and is accepting registrations
   const { data: tournament, error: tournamentError } = await supabase
     .from('tournaments')
-    .select('*, registrations(count)')
+    .select('*')
     .eq('id', tournamentId)
     .single()
 
@@ -88,9 +89,15 @@ export async function registerForTournament(tournamentId: string) {
     return { error: 'You are already registered for this tournament' }
   }
 
+  // Count current registrations
+  const { count: currentPlayers } = await supabase
+    .from('registrations')
+    .select('*', { count: 'exact', head: true })
+    .eq('tournament_id', tournamentId)
+    .eq('status', 'confirmed')
+
   // Determine status (confirmed or waitlist)
-  const currentPlayers = tournament.current_players || 0
-  const status = currentPlayers < tournament.max_slots ? 'confirmed' : 'waitlist'
+  const status = (currentPlayers || 0) < tournament.max_slots ? 'confirmed' : 'waitlist'
 
   const { error: insertError } = await supabase
     .from('registrations')
@@ -103,6 +110,14 @@ export async function registerForTournament(tournamentId: string) {
 
   if (insertError) {
     return { error: insertError.message }
+  }
+
+  // Update tournament current_players count
+  if (status === 'confirmed') {
+    await supabase
+      .from('tournaments')
+      .update({ current_players: (currentPlayers || 0) + 1 })
+      .eq('id', tournamentId)
   }
 
   revalidatePath(`/dashboard/tournaments/${tournamentId}`)
@@ -119,6 +134,67 @@ export async function startTournament(tournamentId: string) {
     return { error: 'Unauthorized' }
   }
 
+  // Get tournament details
+  const { data: tournament, error: tournamentError } = await supabase
+    .from('tournaments')
+    .select('*')
+    .eq('id', tournamentId)
+    .single()
+
+  if (tournamentError || !tournament) {
+    return { error: 'Tournament not found' }
+  }
+
+  // Get confirmed players
+  const { data: registrations } = await supabase
+    .from('registrations')
+    .select('user_id')
+    .eq('tournament_id', tournamentId)
+    .eq('status', 'confirmed')
+
+  const players = registrations?.map(r => r.user_id) || []
+
+  if (players.length < 2) {
+    return { error: 'Need at least 2 players to start tournament' }
+  }
+
+  // Generate bracket based on tournament format
+  const bracketResult = tournament.format === 'single_elimination'
+    ? generateSingleEliminationBracket(players)
+    : generateDoubleEliminationBracket(players, tournamentId)
+
+  // Insert matches into database
+  for (const match of bracketResult.matches) {
+    // If both players are assigned in round 1, set status to ongoing and add deadline
+    const isRound1 = match.round === 1
+    const hasBothPlayers = match.player1_id && match.player2_id
+    
+    let status = 'pending'
+    let deadline = null
+    
+    if (isRound1 && hasBothPlayers) {
+      status = 'ongoing'
+      // Set deadline to 10 minutes from now for the match
+      const deadlineDate = new Date()
+      deadlineDate.setMinutes(deadlineDate.getMinutes() + 10)
+      deadline = deadlineDate.toISOString()
+    }
+
+    const { error: matchError } = await supabase
+      .from('matches')
+      .insert({
+        ...match,
+        tournament_id: tournamentId,
+        status,
+        deadline,
+      })
+
+    if (matchError) {
+      console.error('Error creating match:', matchError)
+    }
+  }
+
+  // Update tournament status to ongoing
   const { error } = await supabase
     .from('tournaments')
     .update({ status: 'ongoing' })
@@ -130,6 +206,7 @@ export async function startTournament(tournamentId: string) {
 
   revalidatePath(`/admin/tournaments/${tournamentId}`)
   revalidatePath('/admin/dashboard')
+  revalidatePath('/dashboard')
 
   return { success: true }
 }
