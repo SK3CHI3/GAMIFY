@@ -104,9 +104,9 @@ export function TournamentChat({ tournamentId, currentUserId }: TournamentChatPr
   }
 
   return (
-    <div className="glass-card h-[600px] flex flex-col">
+    <div className="bg-white border border-gray-200 rounded-xl shadow-lg h-[600px] flex flex-col">
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-4">
+      <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gradient-to-b from-blue-50/30 to-white">
         {messages.length > 0 ? (
           messages.map((msg) => {
             const isCurrentUser = msg.user_id === currentUserId
@@ -120,8 +120,8 @@ export function TournamentChat({ tournamentId, currentUserId }: TournamentChatPr
                   className={`
                     max-w-[70%] rounded-lg p-3
                     ${isCurrentUser 
-                      ? 'gradient-primary text-white' 
-                      : 'bg-white/50'}
+                      ? 'bg-blue-600 text-white' 
+                      : 'bg-gray-100 text-gray-900'}
                   `}
                 >
                   <div className="flex items-center gap-2 mb-1">
@@ -132,7 +132,7 @@ export function TournamentChat({ tournamentId, currentUserId }: TournamentChatPr
                       {format(new Date(msg.created_at), 'HH:mm')}
                     </span>
                   </div>
-                  <p className={isCurrentUser ? 'text-white' : 'text-gray-800'}>
+                  <p className={isCurrentUser ? 'text-white' : 'text-gray-900'}>
                     {msg.message}
                   </p>
                 </div>
@@ -148,19 +148,19 @@ export function TournamentChat({ tournamentId, currentUserId }: TournamentChatPr
       </div>
 
       {/* Input */}
-      <form onSubmit={handleSend} className="border-t border-white/20 p-4">
+      <form onSubmit={handleSend} className="border-t border-gray-200 p-4 bg-white">
         <div className="flex gap-2">
           <Input
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             placeholder="Type a message..."
             disabled={loading}
-            className="flex-1"
+            className="flex-1 border-gray-300 focus:border-blue-600"
           />
           <Button
             type="submit"
             disabled={loading || !newMessage.trim()}
-            className="gradient-primary text-white shadow-glow-green"
+            className="bg-blue-600 hover:bg-blue-700 text-white"
           >
             <Send className="w-4 h-4" />
           </Button>
