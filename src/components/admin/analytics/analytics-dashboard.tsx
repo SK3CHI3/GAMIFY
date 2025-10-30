@@ -470,7 +470,7 @@ export function AnalyticsDashboard() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <PieChart className="h-5 w-5" style={{ color: COLORS.info }} />
-              Tournament Formats & Signups
+              New Player Signups by Format
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -499,18 +499,8 @@ export function AnalyticsDashboard() {
                     stroke={COLORS.secondary}
                     fill={COLORS.secondary}
                     fillOpacity={0.3}
-                    strokeWidth={2}
-                    name="Player Signups"
-                  />
-                  <Area 
-                    type="monotone" 
-                    dataKey="count"
-                    stroke={COLORS.info}
-                    fill={COLORS.info}
-                    fillOpacity={0.1}
-                    strokeWidth={2}
-                    strokeDasharray="5 5"
-                    name="Tournaments"
+                    strokeWidth={3}
+                    name="New Player Signups"
                   />
                 </AreaChart>
               </ResponsiveContainer>
