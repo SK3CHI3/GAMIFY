@@ -12,6 +12,17 @@ export async function signUp(formData: FormData) {
 
   const email = formData.get('email') as string
   const phone = formData.get('phone') as string
+  const fullName = formData.get('full_name') as string
+
+  // Validate required fields
+  if (!email || !phone || !fullName) {
+    return { error: 'All fields are required.' }
+  }
+
+  // Validate phone number is not empty
+  if (phone.trim() === '') {
+    return { error: 'Phone number is required.' }
+  }
 
   // Check if email already exists
   const { data: existingUser } = await supabase
@@ -24,17 +35,15 @@ export async function signUp(formData: FormData) {
     return { error: 'This email is already registered. Please sign in instead.' }
   }
 
-  // Check if phone already exists (only if provided)
-  if (phone && phone.trim() !== '') {
-    const { data: existingPhone } = await supabase
-      .from('profiles')
-      .select('phone')
-      .eq('phone', phone)
-      .single()
+  // Check if phone already exists
+  const { data: existingPhone } = await supabase
+    .from('profiles')
+    .select('phone')
+    .eq('phone', phone.trim())
+    .single()
 
-    if (existingPhone) {
-      return { error: 'This phone number is already registered.' }
-    }
+  if (existingPhone) {
+    return { error: 'This phone number is already registered.' }
   }
 
   const data = {
@@ -42,8 +51,8 @@ export async function signUp(formData: FormData) {
     password: formData.get('password') as string,
     options: {
       data: {
-        full_name: formData.get('full_name') as string,
-        phone: phone || '',
+        full_name: fullName,
+        phone: phone.trim(),
         role: 'player',
       },
       emailRedirectTo: `${siteUrl}/auth/callback`,
@@ -56,6 +65,9 @@ export async function signUp(formData: FormData) {
     // Provide more user-friendly error messages
     if (error.message.includes('already registered')) {
       return { error: 'This email is already registered. Please sign in instead.' }
+    }
+    if (error.message.includes('Phone number is required')) {
+      return { error: 'Phone number is required.' }
     }
     return { error: error.message }
   }
