@@ -10,13 +10,40 @@ export async function signUp(formData: FormData) {
   // Get the site URL from environment or use the current origin
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
 
+  const email = formData.get('email') as string
+  const phone = formData.get('phone') as string
+
+  // Check if email already exists
+  const { data: existingUser } = await supabase
+    .from('profiles')
+    .select('email')
+    .eq('email', email)
+    .single()
+
+  if (existingUser) {
+    return { error: 'This email is already registered. Please sign in instead.' }
+  }
+
+  // Check if phone already exists (only if provided)
+  if (phone && phone.trim() !== '') {
+    const { data: existingPhone } = await supabase
+      .from('profiles')
+      .select('phone')
+      .eq('phone', phone)
+      .single()
+
+    if (existingPhone) {
+      return { error: 'This phone number is already registered.' }
+    }
+  }
+
   const data = {
-    email: formData.get('email') as string,
+    email,
     password: formData.get('password') as string,
     options: {
       data: {
         full_name: formData.get('full_name') as string,
-        phone: formData.get('phone') as string,
+        phone: phone || '',
         role: 'player',
       },
       emailRedirectTo: `${siteUrl}/auth/callback`,
@@ -26,6 +53,10 @@ export async function signUp(formData: FormData) {
   const { error } = await supabase.auth.signUp(data)
 
   if (error) {
+    // Provide more user-friendly error messages
+    if (error.message.includes('already registered')) {
+      return { error: 'This email is already registered. Please sign in instead.' }
+    }
     return { error: error.message }
   }
 
