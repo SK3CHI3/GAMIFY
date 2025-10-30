@@ -27,18 +27,32 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
-  // Refresh session if expired
+  // IMPORTANT: DO NOT REMOVE auth.getUser()
+  // Do not run code between createServerClient and supabase.auth.getUser()
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // Protected routes
+  // Allow access to auth-related routes without authentication
+  const isAuthRoute = 
+    request.nextUrl.pathname.startsWith('/sign-in') ||
+    request.nextUrl.pathname.startsWith('/sign-up') ||
+    request.nextUrl.pathname.startsWith('/auth/')
+
+  // Protected routes - redirect to sign-in if not authenticated
   if (!user && request.nextUrl.pathname.startsWith('/admin')) {
     const url = request.nextUrl.clone()
-    url.pathname = '/'
+    url.pathname = '/sign-in'
     return NextResponse.redirect(url)
   }
 
+  if (!user && request.nextUrl.pathname.startsWith('/dashboard') && !isAuthRoute) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/sign-in'
+    return NextResponse.redirect(url)
+  }
+
+  // IMPORTANT: You *must* return the supabaseResponse object as it is.
   return supabaseResponse
 }
 
