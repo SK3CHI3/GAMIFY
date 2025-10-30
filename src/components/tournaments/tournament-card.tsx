@@ -30,13 +30,13 @@ export function TournamentCard({
       <div className="group bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all cursor-pointer">
         {/* Poster Image */}
         {poster && (
-          <div className="relative h-48 w-full overflow-hidden bg-gradient-to-br from-blue-600 to-yellow-500">
+          <div className="relative h-48 w-full overflow-hidden">
             <img 
               src={poster} 
               alt={tournament.name} 
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
-            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
           </div>
         )}
         
@@ -44,14 +44,14 @@ export function TournamentCard({
         <div className="p-6">
           <div className="flex items-start justify-between mb-4">
             <div className="space-y-2 flex-1">
-              <h3 className="text-xl font-bold text-gray-900 group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-yellow-500 group-hover:bg-clip-text group-hover:text-transparent transition-all">
+              <h3 className="text-xl font-bold text-gray-900 group-hover:text-[#00FF88] transition-all">
                 {tournament.name}
               </h3>
               {tournament.description && (
                 <p className="text-sm text-gray-600 line-clamp-2">{tournament.description}</p>
               )}
             </div>
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-yellow-500 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+            <div className="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
               <Trophy className="w-6 h-6 text-white" />
             </div>
           </div>
@@ -64,7 +64,7 @@ export function TournamentCard({
             {tournament.format.replace('_', ' ')}
           </Badge>
           {userRegistration && (
-            <Badge variant="outline" className="border-emerald-500 text-emerald-600 bg-emerald-50">
+            <Badge variant="outline" className="border-[#00FF88] text-[#00FF88] bg-[#00FF88]/10">
               Registered
             </Badge>
           )}
@@ -72,29 +72,29 @@ export function TournamentCard({
 
         <div className="grid grid-cols-2 gap-4 text-sm mb-4">
           <div className="flex items-center gap-2 text-gray-700">
-            <Users className="w-4 h-4" style={{ color: '#1e3a8a' }} />
+            <Users className="w-4 h-4 text-emerald-600" />
             <span>{tournament.current_players || 0} / {tournament.max_slots} players</span>
           </div>
           <div className="flex items-center gap-2 text-gray-700">
-            <DollarSign className="w-4 h-4" style={{ color: '#1e3a8a' }} />
+            <DollarSign className="w-4 h-4 text-emerald-600" />
             <span>KES {tournament.entry_fee}</span>
           </div>
           {tournament.start_date && (
             <div className="flex items-center gap-2 text-gray-700">
-              <Calendar className="w-4 h-4" style={{ color: '#1e3a8a' }} />
+              <Calendar className="w-4 h-4 text-emerald-600" />
               <span>{format(new Date(tournament.start_date), 'MMM d, yyyy')}</span>
             </div>
           )}
           <div className="flex items-center gap-2">
-            <Trophy className="w-4 h-4" style={{ color: '#1e3a8a' }} />
-            <span className="font-bold" style={{ background: 'linear-gradient(to right, #1e3a8a, #fbbf24)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            <Trophy className="w-4 h-4 text-[#FFB800]" />
+            <span className="font-bold text-[#00FF88]">
               KES {tournament.prize_pool || 0}
             </span>
           </div>
         </div>
 
         {!userRegistration && tournament.status === 'registration' && (
-          <Button className="w-full bg-gradient-to-r from-blue-600 to-yellow-500 text-white shadow-lg hover:shadow-xl transition-all group/btn">
+          <Button className="w-full gradient-primary text-white shadow-glow-green hover:shadow-glow-amber transition-all group/btn">
             <span className="flex items-center gap-2">
               Register Now
               <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
@@ -106,4 +106,3 @@ export function TournamentCard({
     </Link>
   )
 }
-
