@@ -13,11 +13,6 @@ import { createTournament } from '@/app/actions/tournaments'
 import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
 
-const COLORS = {
-  primary: '#1e3a8a',
-  secondary: '#fbbf24'
-}
-
 export function CreateTournamentForm() {
   const router = useRouter()
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -122,8 +117,8 @@ export function CreateTournamentForm() {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Info */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold flex items-center gap-2" style={{ color: COLORS.primary }}>
-              <Trophy className="w-5 h-5" style={{ color: COLORS.secondary }} />
+            <h3 className="text-lg font-semibold flex items-center gap-2 text-blue-600">
+              <Trophy className="w-5 h-5 text-yellow-600" />
               Tournament Details
             </h3>
 
@@ -186,7 +181,7 @@ export function CreateTournamentForm() {
                   )}
                 </Button>
                 {formData.poster_url && !uploading && (
-                  <span className="text-sm text-green-600 flex items-center gap-1">
+                  <span className="text-sm text-blue-600 flex items-center gap-1">
                     <ImageIcon className="h-4 w-4" />
                     Poster uploaded
                   </span>
@@ -307,12 +302,12 @@ export function CreateTournamentForm() {
           </div>
 
           {/* Prize Pool Preview */}
-          <div className="p-4 rounded-lg space-y-2" style={{ backgroundColor: 'rgba(30, 58, 138, 0.05)', border: '1px solid rgba(30, 58, 138, 0.1)' }}>
-            <h4 className="font-semibold" style={{ color: COLORS.primary }}>Prize Pool Breakdown</h4>
+          <div className="p-4 rounded-lg space-y-2 bg-blue-50 border border-blue-200">
+            <h4 className="font-semibold text-blue-600">Prize Pool Breakdown</h4>
             <div className="space-y-1 text-sm">
               <div className="flex justify-between">
                 <span className="text-gray-600">Total Prize Pool:</span>
-                <span className="font-bold" style={{ color: '#10b981' }}>KES {prizePool.toFixed(2)}</span>
+                <span className="font-bold text-yellow-600">KES {prizePool.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">1st Place (60%):</span>
@@ -342,11 +337,7 @@ export function CreateTournamentForm() {
             </Button>
             <Button
               type="submit"
-              className="flex-1 text-white shadow-lg"
-              style={{ 
-                backgroundColor: COLORS.primary,
-                backgroundImage: `linear-gradient(to right, ${COLORS.primary}, ${COLORS.secondary})`
-              }}
+              className="flex-1 bg-blue-600 text-white hover:bg-blue-700 shadow-lg"
               disabled={loading}
             >
               {loading ? (

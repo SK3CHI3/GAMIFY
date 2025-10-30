@@ -14,13 +14,13 @@ export function TournamentCard({
 }) {
   const statusColors = {
     registration: 'bg-blue-500 text-white',
-    ongoing: 'bg-emerald-500 text-white',
+    ongoing: 'bg-blue-600 text-white',
     completed: 'bg-gray-500 text-white',
   }
 
   const formatTypeColors = {
-    single_elimination: 'bg-teal-500 text-white',
-    double_elimination: 'bg-purple-500 text-white',
+    single_elimination: 'bg-yellow-500 text-gray-900',
+    double_elimination: 'bg-amber-500 text-gray-900',
   }
 
   const poster = (tournament as any).poster_url as string | undefined
@@ -44,14 +44,14 @@ export function TournamentCard({
         <div className="p-6">
           <div className="flex items-start justify-between mb-4">
             <div className="space-y-2 flex-1">
-              <h3 className="text-xl font-bold text-gray-900 group-hover:text-[#00FF88] transition-all">
+              <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-all">
                 {tournament.name}
               </h3>
               {tournament.description && (
                 <p className="text-sm text-gray-600 line-clamp-2">{tournament.description}</p>
               )}
             </div>
-            <div className="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+            <div className="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
               <Trophy className="w-6 h-6 text-white" />
             </div>
           </div>
@@ -64,7 +64,7 @@ export function TournamentCard({
             {tournament.format.replace('_', ' ')}
           </Badge>
           {userRegistration && (
-            <Badge variant="outline" className="border-[#00FF88] text-[#00FF88] bg-[#00FF88]/10">
+            <Badge variant="outline" className="border-blue-600 text-blue-600 bg-blue-50">
               Registered
             </Badge>
           )}
@@ -72,29 +72,29 @@ export function TournamentCard({
 
         <div className="grid grid-cols-2 gap-4 text-sm mb-4">
           <div className="flex items-center gap-2 text-gray-700">
-            <Users className="w-4 h-4 text-emerald-600" />
+            <Users className="w-4 h-4 text-blue-600" />
             <span>{tournament.current_players || 0} / {tournament.max_slots} players</span>
           </div>
           <div className="flex items-center gap-2 text-gray-700">
-            <DollarSign className="w-4 h-4 text-emerald-600" />
+            <DollarSign className="w-4 h-4 text-blue-600" />
             <span>KES {tournament.entry_fee}</span>
           </div>
           {tournament.start_date && (
             <div className="flex items-center gap-2 text-gray-700">
-              <Calendar className="w-4 h-4 text-emerald-600" />
+              <Calendar className="w-4 h-4 text-blue-600" />
               <span>{format(new Date(tournament.start_date), 'MMM d, yyyy')}</span>
             </div>
           )}
           <div className="flex items-center gap-2">
-            <Trophy className="w-4 h-4 text-[#FFB800]" />
-            <span className="font-bold text-[#00FF88]">
+            <Trophy className="w-4 h-4 text-yellow-600" />
+            <span className="font-bold text-blue-600">
               KES {tournament.prize_pool || 0}
             </span>
           </div>
         </div>
 
         {!userRegistration && tournament.status === 'registration' && (
-          <Button className="w-full gradient-primary text-white shadow-glow-green hover:shadow-glow-amber transition-all group/btn">
+          <Button className="w-full bg-blue-600 text-white hover:bg-blue-700 transition-all group/btn">
             <span className="flex items-center gap-2">
               Register Now
               <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
