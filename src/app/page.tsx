@@ -24,6 +24,7 @@ export default function LandingPage() {
                 alt="GOALDEN Logo"
                 width={120}
                 height={120}
+                priority
                 className="hover:scale-105 transition-all duration-300"
               />
             </motion.div>
