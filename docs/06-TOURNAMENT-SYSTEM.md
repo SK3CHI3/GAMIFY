@@ -142,7 +142,7 @@ Submit result at: [Link]
 2. System compares scores:
    - **Match agreement**: Both report same winner → Match complete
    - **Score mismatch**: Different winners → Dispute created
-   - **Draw situation**: Both claim same score → Dispute created
+   - **Draw situation**: Both submit same score → Match replayed
 
 **Outcomes**:
 
@@ -159,10 +159,23 @@ Actions:
 - Player stats updated
 ```
 
-#### Scenario B: Dispute Created
+#### Scenario B: Draw - Match Replayed
 ```javascript
-Player 1 submits: 2 (claims win)
-Player 2 submits: 2 (claims win)
+Player 1 submits: 2
+Player 2 submits: 2
+Actions:
+- Match scores reset to null
+- Both submissions cleared
+- Match status remains 'ongoing'
+- New 10-minute deadline set
+- Players must replay the match
+- Toast notification: "Match ended in draw. Replaying!"
+```
+
+#### Scenario C: Dispute Created
+```javascript
+Player 1 submits: 3 (claims win)
+Player 2 submits: 2 (claims different result)
 Actions:
 - Match status → 'disputed'
 - Dispute created in database
@@ -246,6 +259,12 @@ Actions:
 - 📸 **Upload**: Score and screenshot
 - ⏳ **Wait**: For opponent submission
 - 🔄 **Check**: Status updates in real-time
+
+### Match Ended in Draw:
+- 🔄 **Notification**: "Match ended in draw. Replaying!"
+- ⏰ **Timer**: Fresh 10-minute deadline
+- 📸 **Action**: Submit new result
+- 🔁 **Repeat**: Until a winner is determined
 
 ### Match Complete - Moving Forward:
 - 🎉 **Notification**: "You won! Advancing to next round"
