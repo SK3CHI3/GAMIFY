@@ -64,10 +64,13 @@ export function MatchSubmissionForm({ matchId, isPlayer1, opponentName }: MatchS
 
     const result = await submitMatchResult(formData)
 
-    if (result.error) {
+    if ('error' in result && result.error) {
       toast.error(result.error)
       setLoading(false)
-    } else {
+    } else if ('draw' in result && result.draw) {
+      toast.success(result.message || 'Match ended in a draw. Replaying!')
+      router.refresh()
+    } else if ('success' in result && result.success) {
       toast.success('Match result submitted!')
       router.push('/dashboard')
       router.refresh()

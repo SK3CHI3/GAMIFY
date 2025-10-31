@@ -59,7 +59,12 @@ export async function submitMatchResult(formData: FormData) {
 
   // Check if both players have submitted
   if (match.player1_submitted && match.player2_submitted) {
-    await verifyMatchResults(matchId)
+    const result = await verifyMatchResults(matchId)
+    
+    // If it's a draw, return draw info
+    if (result?.draw) {
+      return result
+    }
   }
 
   revalidatePath(`/dashboard/matches/${matchId}`)
@@ -83,13 +88,30 @@ async function verifyMatchResults(matchId: string) {
 
   const { player1_score, player2_score, player1_id, player2_id, tournament_id } = match
 
-  // Check if scores match
+  // Check if scores match (draw situation)
   if (player1_score === player2_score) {
-    // Scores match - it's a draw, both submitted same score
-    // Determine winner based on who scored more (or handle draw differently)
-    // For now, we'll treat matching submissions as needing a winner
-    // In a real scenario, you'd need business logic for handling draws
-    return await createDispute(matchId, 'Draw situation - both players claim same score')
+    // It's a draw - replay the match
+    // Reset scores and submissions but keep match as ongoing
+    await supabase
+      .from('matches')
+      .update({
+        player1_score: null,
+        player2_score: null,
+        player1_screenshot: null,
+        player2_screenshot: null,
+        player1_submitted: false,
+        player2_submitted: false,
+        status: 'ongoing',
+        // Extend deadline by 10 minutes for replay
+        deadline: new Date(Date.now() + 10 * 60 * 1000).toISOString()
+      })
+      .eq('id', matchId)
+    
+    // Revalidate paths
+    revalidatePath(`/dashboard/matches/${matchId}`)
+    revalidatePath(`/dashboard/tournaments/${tournament_id}`)
+    
+    return { draw: true, message: 'Match ended in a draw. Replaying with fresh 10-minute timer.' }
   }
 
   // Check if one player claims they won
