@@ -129,7 +129,7 @@ export function TournamentsTab() {
 
           <TabsContent value="registration" className="space-y-4">
             {registrationTournaments.length > 0 ? (
-              <div className="grid gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {registrationTournaments.map((tournament) => (
                   <div key={tournament.id} onClick={() => handleTournamentClick(tournament)}>
                     <TournamentCard 
@@ -207,7 +207,7 @@ export function TournamentsTab() {
 
           <TabsContent value="completed" className="space-y-4">
             {completedTournaments.length > 0 ? (
-              <div className="grid gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {completedTournaments.map((tournament) => (
                   <div key={tournament.id} onClick={() => handleTournamentClick(tournament)}>
                     <TournamentCard 
