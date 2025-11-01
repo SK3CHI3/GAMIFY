@@ -252,7 +252,180 @@ async function advanceToNextRound(
           .eq('id', nextMatch.id)
       }
     }
+  } else {
+    // No next match means tournament is complete for this bracket
+    await handleTournamentCompletion(currentMatch.tournament_id, winnerId)
   }
+}
+
+async function handleTournamentCompletion(tournamentId: string, winnerId: string) {
+  const supabase = await createClient()
+
+  // Get tournament info
+  const { data: tournament } = await supabase
+    .from('tournaments')
+    .select('*')
+    .eq('id', tournamentId)
+    .single()
+
+  if (!tournament) return
+
+  // Get all matches to determine final positions
+  const { data: allMatches } = await supabase
+    .from('matches')
+    .select('*')
+    .eq('tournament_id', tournamentId)
+    .eq('status', 'completed')
+    .order('round', { ascending: true })
+
+  // Get all registered players
+  const { data: allRegistrations } = await supabase
+    .from('registrations')
+    .select('user_id')
+    .eq('tournament_id', tournamentId)
+    .eq('status', 'confirmed')
+
+  if (!allMatches || !allRegistrations) return
+
+  // Determine final positions (top 3 only get prizes and points)
+  const prizePool = parseFloat(String(tournament.prize_pool || 0))
+  const positions = determineFinalPositions(allMatches, allRegistrations.map(r => r.user_id), prizePool)
+  
+  // Award points and update positions
+  for (const { userId, position, prizeAmount } of positions) {
+    let pointsAwarded = 0
+    
+    // Award points based on position
+    if (position === 1) {
+      pointsAwarded = 1000 // 1st place: 1000 points
+    } else if (position === 2) {
+      pointsAwarded = 500  // 2nd place: 500 points
+    } else if (position === 3) {
+      pointsAwarded = 250  // 3rd place: 250 points
+    } else {
+      // Participation points for all other players
+      pointsAwarded = 100
+    }
+
+    // Update registration with position and prize
+    await supabase
+      .from('registrations')
+      .update({
+        position_finished: position,
+        prize_amount: prizeAmount,
+        points_awarded: pointsAwarded
+      })
+      .eq('tournament_id', tournamentId)
+      .eq('user_id', userId)
+
+    // Update player stats with points (direct update since RPC doesn't exist yet)
+    const { data: existingStats } = await supabase
+      .from('player_stats')
+      .select('tournament_points')
+      .eq('user_id', userId)
+      .single()
+    
+    if (existingStats) {
+      await supabase
+        .from('player_stats')
+        .update({ tournament_points: (existingStats.tournament_points || 0) + pointsAwarded })
+        .eq('user_id', userId)
+    }
+
+    // If in top 3, update earnings
+    if (position !== null && position <= 3 && prizeAmount > 0) {
+      const { data: stats } = await supabase
+        .from('player_stats')
+        .select('total_earnings')
+        .eq('user_id', userId)
+        .single()
+      
+      if (stats) {
+        await supabase
+          .from('player_stats')
+          .update({ total_earnings: (parseFloat(String(stats.total_earnings || 0)) + prizeAmount) })
+          .eq('user_id', userId)
+      }
+    }
+  }
+
+  // Mark tournament as completed
+  await supabase
+    .from('tournaments')
+    .update({ 
+      status: 'completed',
+      end_date: new Date().toISOString()
+    })
+    .eq('id', tournamentId)
+}
+
+function determineFinalPositions(matches: any[], playerIds: string[], prizePool: number) {
+  // Simple position determination based on match results
+  // In real implementation, this would be more sophisticated
+  
+  const winners = matches.map(m => m.winner_id).filter(Boolean)
+  const losers = matches.flatMap(m => [m.player1_id, m.player2_id])
+    .filter(id => winners.includes(id))
+  
+  const uniqueWinners = [...new Set(winners)]
+  const uniqueLosers = [...new Set(playerIds)].filter(id => !uniqueWinners.includes(id))
+  
+  // Determine top 3
+  const positions: Array<{ userId: string; position: number | null; prizeAmount: number }> = []
+  
+  // Find final match (last round, last match)
+  const finalMatch = matches.sort((a, b) => {
+    if (a.round !== b.round) return b.round - a.round
+    return b.match_number - a.match_number
+  })[0]
+  
+  if (finalMatch && finalMatch.winner_id) {
+    positions.push({
+      userId: finalMatch.winner_id,
+      position: 1,
+      prizeAmount: prizePool * 0.45
+    })
+    
+    // 2nd place (loser of final)
+    const loserId = finalMatch.player1_id === finalMatch.winner_id 
+      ? finalMatch.player2_id 
+      : finalMatch.player1_id
+    if (loserId) {
+      positions.push({
+        userId: loserId,
+        position: 2,
+        prizeAmount: prizePool * 0.225
+      })
+    }
+  }
+  
+  // Find 3rd place (semifinal losers, if applicable)
+  // For simplicity, we'll assign first loser as 3rd place
+  const semifinalLosers = matches.filter(m => 
+    m.round === Math.max(...matches.map(mm => mm.round)) - 1 && 
+    m.status === 'completed'
+  ).flatMap(m => [m.player1_id, m.player2_id].filter(id => id !== m.winner_id))
+  
+  if (semifinalLosers.length > 0 && !positions.find(p => p.position === 3)) {
+    positions.push({
+      userId: semifinalLosers[0],
+      position: 3,
+      prizeAmount: prizePool * 0.075
+    })
+  }
+  
+  // Add remaining players with participation points only
+  playerIds.forEach(userId => {
+    if (!positions.find(p => p.userId === userId)) {
+      positions.push({
+        userId,
+        position: null,
+        prizeAmount: 0
+      })
+    }
+  })
+  
+  return positions
 }
 
 export async function resolveDispute(

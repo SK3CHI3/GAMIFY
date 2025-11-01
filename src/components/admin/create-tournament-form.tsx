@@ -309,17 +309,30 @@ export function CreateTournamentForm() {
                 <span className="text-gray-600">Total Prize Pool:</span>
                 <span className="font-bold text-yellow-600">KES {prizePool.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">1st Place (60%):</span>
-                <span className="font-semibold">KES {(prizePool * 0.6).toFixed(2)}</span>
+              <div className="border-t pt-2 mt-2 space-y-1">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Platform Fee (25%):</span>
+                  <span className="font-semibold text-blue-700">KES {(prizePool * 0.25).toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Players Prize Pool (75%):</span>
+                  <span className="font-semibold">KES {(prizePool * 0.75).toFixed(2)}</span>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">2nd Place (30%):</span>
-                <span className="font-semibold">KES {(prizePool * 0.3).toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">3rd Place (10%):</span>
-                <span className="font-semibold">KES {(prizePool * 0.1).toFixed(2)}</span>
+              <div className="border-t pt-2 mt-2 space-y-1 bg-white/50 p-2 rounded">
+                <p className="text-xs font-semibold text-gray-700 mb-1">Top 3 Winners:</p>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">1st Place:</span>
+                  <span className="font-semibold text-yellow-600">KES {(prizePool * 0.45).toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">2nd Place:</span>
+                  <span className="font-semibold">KES {(prizePool * 0.225).toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">3rd Place:</span>
+                  <span className="font-semibold">KES {(prizePool * 0.075).toFixed(2)}</span>
+                </div>
               </div>
             </div>
           </div>

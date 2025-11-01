@@ -202,6 +202,7 @@ export type Database = {
           total_matches: number | null
           tournaments_played: number | null
           tournaments_won: number | null
+          tournament_points: number
           updated_at: string | null
           user_id: string
           win_rate: number | null
@@ -214,6 +215,7 @@ export type Database = {
           total_matches?: number | null
           tournaments_played?: number | null
           tournaments_won?: number | null
+          tournament_points?: number
           updated_at?: string | null
           user_id: string
           win_rate?: number | null
@@ -226,6 +228,7 @@ export type Database = {
           total_matches?: number | null
           tournaments_played?: number | null
           tournaments_won?: number | null
+          tournament_points?: number
           updated_at?: string | null
           user_id?: string
           win_rate?: number | null
@@ -280,6 +283,7 @@ export type Database = {
         Row: {
           id: string
           payment_status: string | null
+          points_awarded: number
           position_finished: number | null
           prize_amount: number | null
           registered_at: string | null
@@ -290,6 +294,7 @@ export type Database = {
         Insert: {
           id?: string
           payment_status?: string | null
+          points_awarded?: number
           position_finished?: number | null
           prize_amount?: number | null
           registered_at?: string | null
@@ -300,6 +305,7 @@ export type Database = {
         Update: {
           id?: string
           payment_status?: string | null
+          points_awarded?: number
           position_finished?: number | null
           prize_amount?: number | null
           registered_at?: string | null
