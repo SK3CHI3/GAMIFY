@@ -15,6 +15,7 @@ export function TournamentCard({
   const statusColors = {
     registration: 'bg-blue-500 text-white',
     ongoing: 'bg-blue-600 text-white',
+    paused: 'bg-yellow-500 text-white',
     completed: 'bg-gray-500 text-white',
   }
 

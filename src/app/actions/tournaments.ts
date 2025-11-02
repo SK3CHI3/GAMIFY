@@ -211,3 +211,124 @@ export async function startTournament(tournamentId: string) {
   return { success: true }
 }
 
+export async function pauseTournament(tournamentId: string) {
+  const supabase = await createClient()
+  const user = await getCurrentUser()
+
+  if (!user || user.role !== 'admin') {
+    return { error: 'Unauthorized' }
+  }
+
+  // Check if tournament exists and is ongoing
+  const { data: tournament, error: tournamentError } = await supabase
+    .from('tournaments')
+    .select('*')
+    .eq('id', tournamentId)
+    .single()
+
+  if (tournamentError || !tournament) {
+    return { error: 'Tournament not found' }
+  }
+
+  if (tournament.status !== 'ongoing') {
+    return { error: 'Only ongoing tournaments can be paused' }
+  }
+
+  // Update tournament status to paused
+  const { error } = await supabase
+    .from('tournaments')
+    .update({ status: 'paused' })
+    .eq('id', tournamentId)
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  revalidatePath(`/admin/tournaments/${tournamentId}`)
+  revalidatePath('/admin/dashboard')
+  revalidatePath('/dashboard')
+
+  return { success: true }
+}
+
+export async function resumeTournament(tournamentId: string) {
+  const supabase = await createClient()
+  const user = await getCurrentUser()
+
+  if (!user || user.role !== 'admin') {
+    return { error: 'Unauthorized' }
+  }
+
+  // Check if tournament exists and is paused
+  const { data: tournament, error: tournamentError } = await supabase
+    .from('tournaments')
+    .select('*')
+    .eq('id', tournamentId)
+    .single()
+
+  if (tournamentError || !tournament) {
+    return { error: 'Tournament not found' }
+  }
+
+  if (tournament.status !== 'paused') {
+    return { error: 'Only paused tournaments can be resumed' }
+  }
+
+  // Update tournament status back to ongoing
+  const { error } = await supabase
+    .from('tournaments')
+    .update({ status: 'ongoing' })
+    .eq('id', tournamentId)
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  revalidatePath(`/admin/tournaments/${tournamentId}`)
+  revalidatePath('/admin/dashboard')
+  revalidatePath('/dashboard')
+
+  return { success: true }
+}
+
+export async function deleteTournament(tournamentId: string) {
+  const supabase = await createClient()
+  const user = await getCurrentUser()
+
+  if (!user || user.role !== 'admin') {
+    return { error: 'Unauthorized' }
+  }
+
+  // Check if tournament exists
+  const { data: tournament, error: tournamentError } = await supabase
+    .from('tournaments')
+    .select('*')
+    .eq('id', tournamentId)
+    .single()
+
+  if (tournamentError || !tournament) {
+    return { error: 'Tournament not found' }
+  }
+
+  // Prevent deletion of completed tournaments
+  if (tournament.status === 'completed') {
+    return { error: 'Cannot delete completed tournaments' }
+  }
+
+  // Delete the tournament (cascade will handle related data)
+  const { error } = await supabase
+    .from('tournaments')
+    .delete()
+    .eq('id', tournamentId)
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  revalidatePath('/admin/tournaments')
+  revalidatePath('/admin/dashboard')
+  revalidatePath('/dashboard')
+
+  return { success: true }
+}
+

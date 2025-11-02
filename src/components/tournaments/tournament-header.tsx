@@ -13,6 +13,7 @@ export function TournamentHeader({ tournament, isRegistered, participantCount }:
   const statusColors = {
     registration: 'bg-blue-500',
     ongoing: 'bg-[#00FF88]',
+    paused: 'bg-yellow-500',
     completed: 'bg-gray-500',
     cancelled: 'bg-red-500',
   }
@@ -106,6 +107,14 @@ export function TournamentHeader({ tournament, isRegistered, participantCount }:
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
           <p className="text-sm text-blue-800">
             <strong>Registration Open:</strong> Tournament will start when all slots are filled or at the scheduled time.
+          </p>
+        </div>
+      )}
+
+      {tournament.status === 'paused' && (
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <p className="text-sm text-yellow-800">
+            <strong>Tournament Paused:</strong> This tournament has been temporarily paused by an administrator.
           </p>
         </div>
       )}

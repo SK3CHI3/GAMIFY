@@ -5,9 +5,9 @@ import { createClient } from '@/lib/supabase/client'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Trophy, Users, DollarSign, Calendar, Play, Pause, CheckCircle, Loader2 } from 'lucide-react'
+import { Trophy, Users, DollarSign, Calendar, Play, Pause, CheckCircle, Loader2, Trash2, PlayCircle } from 'lucide-react'
 import { format } from 'date-fns'
-import { startTournament } from '@/app/actions/tournaments'
+import { startTournament, pauseTournament, resumeTournament, deleteTournament } from '@/app/actions/tournaments'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 
@@ -15,6 +15,8 @@ export function TournamentsManageTab() {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [startingTournament, setStartingTournament] = useState<string | null>(null)
+  const [pausingTournament, setPausingTournament] = useState<string | null>(null)
+  const [deletingTournament, setDeletingTournament] = useState<string | null>(null)
   const [tournaments, setTournaments] = useState<any[]>([])
 
   useEffect(() => {
@@ -60,8 +62,85 @@ export function TournamentsManageTab() {
   }
 
   const handlePauseTournament = async (tournamentId: string) => {
-    // TODO: Implement tournament pause logic
-    console.log('Pausing tournament:', tournamentId)
+    setPausingTournament(tournamentId)
+    
+    try {
+      const result = await pauseTournament(tournamentId)
+      
+      if (result.error) {
+        toast.error(result.error)
+      } else {
+        toast.success('Tournament paused successfully!')
+        router.refresh()
+        // Reload tournaments
+        const supabase = createClient()
+        const { data } = await supabase
+          .from('tournaments')
+          .select('*')
+          .order('created_at', { ascending: false })
+        setTournaments(data || [])
+      }
+    } catch (error) {
+      toast.error('Failed to pause tournament')
+    } finally {
+      setPausingTournament(null)
+    }
+  }
+
+  const handleResumeTournament = async (tournamentId: string) => {
+    setPausingTournament(tournamentId)
+    
+    try {
+      const result = await resumeTournament(tournamentId)
+      
+      if (result.error) {
+        toast.error(result.error)
+      } else {
+        toast.success('Tournament resumed successfully!')
+        router.refresh()
+        // Reload tournaments
+        const supabase = createClient()
+        const { data } = await supabase
+          .from('tournaments')
+          .select('*')
+          .order('created_at', { ascending: false })
+        setTournaments(data || [])
+      }
+    } catch (error) {
+      toast.error('Failed to resume tournament')
+    } finally {
+      setPausingTournament(null)
+    }
+  }
+
+  const handleDeleteTournament = async (tournamentId: string) => {
+    if (!confirm('Are you sure you want to delete this tournament? This action cannot be undone.')) {
+      return
+    }
+
+    setDeletingTournament(tournamentId)
+    
+    try {
+      const result = await deleteTournament(tournamentId)
+      
+      if (result.error) {
+        toast.error(result.error)
+      } else {
+        toast.success('Tournament deleted successfully!')
+        router.refresh()
+        // Reload tournaments
+        const supabase = createClient()
+        const { data } = await supabase
+          .from('tournaments')
+          .select('*')
+          .order('created_at', { ascending: false })
+        setTournaments(data || [])
+      }
+    } catch (error) {
+      toast.error('Failed to delete tournament')
+    } finally {
+      setDeletingTournament(null)
+    }
   }
 
   if (loading) {
@@ -108,6 +187,7 @@ export function TournamentsManageTab() {
   const statusColors = {
     registration: 'bg-blue-500 text-white',
     ongoing: 'bg-emerald-500 text-white',
+    paused: 'bg-yellow-500 text-white',
     completed: 'bg-gray-500 text-white',
   }
 
@@ -178,30 +258,93 @@ export function TournamentsManageTab() {
 
                 <div className="flex gap-2">
                   {tournament.status === 'registration' && (
-                    <Button
-                      size="sm"
-                      onClick={() => handleStartTournament(tournament.id)}
-                      disabled={startingTournament === tournament.id}
-                      className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:shadow-lg hover:shadow-emerald-500/30"
-                    >
-                      {startingTournament === tournament.id ? (
-                        <Loader2 className="w-4 h-4 mr-1 animate-spin" />
-                      ) : (
-                        <Play className="w-4 h-4 mr-1" />
-                      )}
-                      Start
-                    </Button>
+                    <>
+                      <Button
+                        size="sm"
+                        onClick={() => handleStartTournament(tournament.id)}
+                        disabled={startingTournament === tournament.id}
+                        className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:shadow-lg hover:shadow-emerald-500/30"
+                      >
+                        {startingTournament === tournament.id ? (
+                          <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                        ) : (
+                          <Play className="w-4 h-4 mr-1" />
+                        )}
+                        Start
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => handleDeleteTournament(tournament.id)}
+                        disabled={deletingTournament === tournament.id}
+                      >
+                        {deletingTournament === tournament.id ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Trash2 className="w-4 h-4" />
+                        )}
+                      </Button>
+                    </>
                   )}
                   {tournament.status === 'ongoing' && (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handlePauseTournament(tournament.id)}
-                      className="border-emerald-600 text-emerald-600 hover:bg-emerald-50"
-                    >
-                      <Pause className="w-4 h-4 mr-1" />
-                      Pause
-                    </Button>
+                    <>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handlePauseTournament(tournament.id)}
+                        disabled={pausingTournament === tournament.id}
+                        className="border-emerald-600 text-emerald-600 hover:bg-emerald-50"
+                      >
+                        {pausingTournament === tournament.id ? (
+                          <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                        ) : (
+                          <Pause className="w-4 h-4 mr-1" />
+                        )}
+                        Pause
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => handleDeleteTournament(tournament.id)}
+                        disabled={deletingTournament === tournament.id}
+                      >
+                        {deletingTournament === tournament.id ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Trash2 className="w-4 h-4" />
+                        )}
+                      </Button>
+                    </>
+                  )}
+                  {tournament.status === 'paused' && (
+                    <>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleResumeTournament(tournament.id)}
+                        disabled={pausingTournament === tournament.id}
+                        className="border-emerald-600 text-emerald-600 hover:bg-emerald-50"
+                      >
+                        {pausingTournament === tournament.id ? (
+                          <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                        ) : (
+                          <PlayCircle className="w-4 h-4 mr-1" />
+                        )}
+                        Resume
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => handleDeleteTournament(tournament.id)}
+                        disabled={deletingTournament === tournament.id}
+                      >
+                        {deletingTournament === tournament.id ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Trash2 className="w-4 h-4" />
+                        )}
+                      </Button>
+                    </>
                   )}
                   {tournament.status === 'completed' && (
                     <Badge variant="outline" className="border-gray-400 text-gray-600">
