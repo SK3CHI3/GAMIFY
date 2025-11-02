@@ -109,7 +109,7 @@ export function TournamentDetail({ tournament, userId, onClose }: TournamentDeta
       />
 
       {!userRegistration && tournament.status === 'registration' && (
-        <RegisterButton tournamentId={tournament.id} />
+        <RegisterButton tournamentId={tournament.id} entryFee={tournament.entry_fee} />
       )}
 
       {userMatch && (

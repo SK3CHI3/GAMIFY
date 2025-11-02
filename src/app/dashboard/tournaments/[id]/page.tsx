@@ -90,7 +90,7 @@ export default async function TournamentDetailPage({ params }: { params: Promise
 
       {!isRegistered && tournament.status === 'registration' && (
         <div className="mt-6">
-          <RegisterButton tournamentId={tournament.id} />
+          <RegisterButton tournamentId={tournament.id} entryFee={tournament.entry_fee} />
         </div>
       )}
 
