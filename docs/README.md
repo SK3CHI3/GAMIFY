@@ -11,11 +11,8 @@ Welcome to the GOALDEN documentation. This guide will help you understand, deplo
 - [Environment Configuration](./04-ENVIRONMENT.md) - Environment variables and secrets
 
 ### Core Features
-- [Authentication Flow](./05-AUTHENTICATION.md) - User registration and login
 - [Tournament System](./06-TOURNAMENT-SYSTEM.md) - Tournament creation and management
-- [Match Management](./07-MATCH-MANAGEMENT.md) - Match flow and result submission
-- [Dispute Resolution](./08-DISPUTE-RESOLUTION.md) - Handling match disputes
-- [Payment Integration](./09-PAYMENT-INTEGRATION.md) - M-PESA integration guide
+- [Payment Integration](./07-PAYMENT-INTEGRATION.md) - IntaSend M-PESA integration guide
 
 ### Admin Features
 - [Admin Dashboard](./10-ADMIN-DASHBOARD.md) - Admin panel overview
@@ -60,7 +57,7 @@ Welcome to the GOALDEN documentation. This guide will help you understand, deplo
 
 ### For Integrators
 - Review the [Integration Guide](./18-INTEGRATION-GUIDE.md)
-- Set up [Payment Integration](./09-PAYMENT-INTEGRATION.md)
+- Set up [Payment Integration](./07-PAYMENT-INTEGRATION.md)
 - Configure [Email Setup](./19-EMAIL-SETUP.md)
 
 ---
