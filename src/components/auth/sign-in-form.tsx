@@ -99,14 +99,22 @@ export function SignInForm() {
           )}
         </Button>
 
-        <div className="text-center text-sm text-gray-600">
-          Don&apos;t have an account?{' '}
+        <div className="text-center text-sm">
           <Link
-            href="/sign-up"
-            className="text-blue-600 hover:text-blue-700 font-semibold hover:underline"
+            href="/forgot-password"
+            className="text-blue-600 hover:text-blue-700 font-medium hover:underline block mb-2"
           >
-            Sign up
+            Forgot password?
           </Link>
+          <span className="text-gray-600">
+            Don&apos;t have an account?{' '}
+            <Link
+              href="/sign-up"
+              className="text-blue-600 hover:text-blue-700 font-semibold hover:underline"
+            >
+              Sign up
+            </Link>
+          </span>
         </div>
       </form>
     </div>

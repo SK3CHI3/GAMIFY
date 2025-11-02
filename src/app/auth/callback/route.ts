@@ -23,6 +23,14 @@ export async function GET(request: NextRequest) {
     })
     
     if (!error) {
+      // For password recovery, redirect to reset password page
+      if (type === 'recovery') {
+        redirectTo.pathname = '/reset-password'
+        redirectTo.searchParams.set('token', token_hash)
+        redirectTo.searchParams.set('type', type)
+        return NextResponse.redirect(redirectTo)
+      }
+      
       redirectTo.searchParams.delete('next')
       return NextResponse.redirect(redirectTo)
     }

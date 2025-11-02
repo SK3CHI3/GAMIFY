@@ -133,3 +133,24 @@ export async function getCurrentUser() {
   return profile
 }
 
+export async function resetPassword(email: string) {
+  const supabase = await createClient()
+  
+  // Get the site URL from environment - this MUST be set for production
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
+  
+  if (!siteUrl) {
+    return { error: 'Site URL not configured. Please contact support.' }
+  }
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${siteUrl}/auth/reset-password`,
+  })
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  return { success: true }
+}
+
