@@ -10,7 +10,6 @@ import {
   Users, 
   Trophy, 
   Plus, 
-  Target,
   DollarSign,
   AlertCircle,
   MessageSquare,
@@ -25,7 +24,6 @@ import { AnalyticsDashboard } from '@/components/admin/analytics/analytics-dashb
 import { PlayerManagement } from '@/components/admin/players/player-management'
 import { TournamentsManageTab } from '@/components/admin/tabs/tournaments-manage-tab'
 import { CreateTournamentTab } from '@/components/admin/tabs/create-tournament-tab'
-import { LiveBracket } from '@/components/admin/tournaments/live-bracket'
 import { FinancialDashboard } from '@/components/admin/financial/financial-dashboard'
 import { AdvancedDisputeResolution } from '@/components/admin/disputes/advanced-dispute-resolution'
 import { AdminCommunication } from '@/components/admin/communication/admin-communication'
@@ -61,12 +59,6 @@ const navigationItems = [
     label: 'Create Tournament',
     icon: Plus,
     description: 'Create new tournaments'
-  },
-  {
-    id: 'brackets',
-    label: 'Live Brackets',
-    icon: Target,
-    description: 'Live tournament brackets'
   },
   {
     id: 'financial',
@@ -109,8 +101,6 @@ export default function AdminDashboard() {
         return <TournamentsManageTab />
       case 'create':
         return <CreateTournamentTab />
-      case 'brackets':
-        return <LiveBracket tournamentId="sample-tournament-id" />
       case 'financial':
         return <FinancialDashboard />
       case 'disputes':
