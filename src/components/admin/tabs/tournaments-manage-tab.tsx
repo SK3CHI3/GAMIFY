@@ -10,6 +10,7 @@ import { format } from 'date-fns'
 import { startTournament, pauseTournament, resumeTournament, deleteTournament } from '@/app/actions/tournaments'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 export function TournamentsManageTab() {
   const router = useRouter()
@@ -217,8 +218,8 @@ export function TournamentsManageTab() {
               className="backdrop-blur-xl bg-white/80 border border-white/40 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all"
             >
               <div className="flex items-start justify-between mb-4">
-                <div className="flex-1">
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{tournament.name}</h3>
+                <Link href={`/admin/tournaments/${tournament.id}`} className="flex-1 cursor-pointer group">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">{tournament.name}</h3>
                   {tournament.description && (
                     <p className="text-gray-600 text-sm mb-3">{tournament.description}</p>
                   )}
@@ -254,7 +255,7 @@ export function TournamentsManageTab() {
                       </span>
                     </div>
                   </div>
-                </div>
+                </Link>
 
                 <div className="flex gap-2">
                   {tournament.status === 'registration' && (
