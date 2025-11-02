@@ -17,20 +17,22 @@ export async function GET(request: NextRequest) {
   if (token_hash && type) {
     const supabase = await createClient()
 
+    // For password recovery, redirect to reset password page WITHOUT verifying first
+    // The user will need to verify on the reset page to get a session
+    if (type === 'recovery') {
+      redirectTo.pathname = '/reset-password'
+      redirectTo.searchParams.set('token_hash', token_hash)
+      redirectTo.searchParams.set('type', type)
+      return NextResponse.redirect(redirectTo)
+    }
+
+    // For other types (email confirmation), verify the OTP
     const { error } = await supabase.auth.verifyOtp({
       type,
       token_hash,
     })
     
     if (!error) {
-      // For password recovery, redirect to reset password page
-      if (type === 'recovery') {
-        redirectTo.pathname = '/reset-password'
-        redirectTo.searchParams.set('token', token_hash)
-        redirectTo.searchParams.set('type', type)
-        return NextResponse.redirect(redirectTo)
-      }
-      
       redirectTo.searchParams.delete('next')
       return NextResponse.redirect(redirectTo)
     }

@@ -6,7 +6,7 @@ import { ResetPasswordContent } from '@/components/auth/reset-password-content'
 
 function ResetPasswordPageContent() {
   const searchParams = useSearchParams()
-  const token = searchParams.get('token')
+  const token = searchParams.get('token_hash') || searchParams.get('token')
   const type = searchParams.get('type')
 
   return <ResetPasswordContent token={token} type={type} />

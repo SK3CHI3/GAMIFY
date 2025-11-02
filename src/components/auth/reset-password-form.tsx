@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -19,10 +19,37 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
   const [success, setSuccess] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [isVerified, setIsVerified] = useState(false)
   const [formData, setFormData] = useState({
     password: '',
     confirmPassword: ''
   })
+
+  // Verify OTP when component mounts if we have a token_hash
+  useEffect(() => {
+    async function verifyToken() {
+      if (token && token.length > 50) { // token_hash is longer than a regular token
+        const supabase = createClient()
+        
+        // Verify the OTP token to create a session
+        const { error } = await supabase.auth.verifyOtp({
+          token_hash: token,
+          type: 'recovery'
+        })
+
+        if (error) {
+          setError('Invalid or expired reset link. Please request a new password reset.')
+        } else {
+          setIsVerified(true)
+        }
+      } else {
+        // If it's not a token_hash, assume we already have a session
+        setIsVerified(true)
+      }
+    }
+
+    verifyToken()
+  }, [token])
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -60,6 +87,27 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
         router.push('/sign-in')
       }, 2000)
     }
+  }
+
+  // Show loading state while verifying
+  if (!isVerified && token && token.length > 50) {
+    return (
+      <div className="space-y-4 text-center">
+        <Loader2 className="w-8 h-8 mx-auto animate-spin text-blue-600" />
+        <p className="text-gray-600">Verifying reset link...</p>
+      </div>
+    )
+  }
+
+  // Show error if verification failed
+  if (!isVerified && error) {
+    return (
+      <div className="space-y-4 text-center">
+        <div className="text-sm text-red-600 bg-red-50 p-3 rounded-lg border border-red-200">
+          {error}
+        </div>
+      </div>
+    )
   }
 
   if (success) {
